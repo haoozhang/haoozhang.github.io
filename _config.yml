@@ -14,11 +14,11 @@ future: true
 # SNS settings
 RSS: false
 #weibo_username:     huxpro
-zhihu_username:      zhang-hao-95-92
 github_username:     NewbieCoder-Hao
 #twitter_username:   huxpro
 #facebook_username:  huxpro
 linkedin_username:   昊-张-44b025b8
+zhihu_username:      zhang-hao-95-92
 
 
 
@@ -59,7 +59,7 @@ kramdown:
 
 
 # Disqus settings
-disqus_username: hao
+disqus_username: Hao
 
 # Netease settings
 netease_comment: false
