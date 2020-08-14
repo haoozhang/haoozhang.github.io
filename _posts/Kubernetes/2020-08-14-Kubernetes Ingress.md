@@ -47,9 +47,8 @@ spec:
 上面展示了单服务的 Ingress 示例，下面展示流量从单个 IP 地址路由到多个服务。
 
 ```java
-foo.bar.com -> 178.91.123.132 -> / foo    service1:4200 
-
-                                                        / bar    service2:8080 
+foo.bar.com -> 178.91.123.132 -> /foo  service1:4200 
+                                 /bar  service2:8080 
 ```
 
 ```java
@@ -74,57 +73,45 @@ spec:
                 servicePort: 8080
 ```
 
-#### 基于名称的虚拟托管：针对多个主机名的 HTTP 流量路由到同一 IP 地址上
+#### 基于名称的虚拟托管
+针对多个主机名的 HTTP 流量路由到同一 IP 地址上
 
-foo.bar.com --|                           |-> foo.bar.com service1:80 
+```java
+foo.bar.com --|                 |-> foo.bar.com service1:80 
 
-                       | 178.91.123.132  | 
+              | 178.91.123.132  | 
 
-bar.foo.com --|                           |-> bar.foo.com service2:80 
+bar.foo.com --|                 |-> bar.foo.com service2:80
+``` 
 
 ```java
 apiVersion: networking.k8s.io/v1beta1 
-
 kind: Ingress 
-
 metadata: 
-
     name: name-virtual-host-ingress 
-
 spec: 
-
     rules: 
-
     - host: foo.bar.com 
-
     http: 
-
         paths: 
-
          - backend: 
-
             serviceName: service1 
-
             servicePort: 80 
-
     - host: bar.foo.com 
-
     http: 
-
         paths: 
-
          - backend: 
-
             serviceName: service2 
-
             servicePort: 80 
 ```
 
 #### 查看和更新Ingress 
+```java
 kubectl describe ingress test 
 kubectl edit ingress test 
+```
 
 参考自：
-1. [递归公式的理解](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/nan-dian-shi-di-gui-gong-shi-de-li-jie-by-piao-yi-/)
+1. [Kubernetes Ingress](https://kubernetes.io/zh/docs/concepts/services-networking/ingress/)
 
 
