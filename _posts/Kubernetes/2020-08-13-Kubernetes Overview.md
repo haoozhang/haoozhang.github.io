@@ -17,7 +17,7 @@ tags:
 
 如今，这种庞大的单体架构应用逐渐地被拆分为较小的、独立运行的组件，这些组件被称为**微服务**(microservice)。微服务之间相互解耦，所以可以分别独立的部署、发布、更新、扩展，如下图所示。这种快速的迭代更新方式在当今的需求快速变化的时代也显得尤为重要。
 
-![img](/img/post/microservice.png)
+![img](/img/post/post_microservice.png)
 
 但是，随着一个应用里微服务的数量逐渐增多，增加了部署和运维的工作量，如何把这些微服务配置部署到数据中心来让整个应用运行变得越来越困难。这里的难点在于某个微服务应该被调度到哪台服务器执行、当服务器crash时微服务该如何迁移，以尽可能提高资源的利用率，降低硬件成本。人为的配置和调度显然是不可能的。我们需要一个自动化工具，它帮我们完成自动调度微服务组件到某台合适的服务器、自动配置部署、持续地监视组件状态以及出错时的及时处理等工作。这就是Kubernetes的由来。
 
@@ -31,7 +31,7 @@ Kubernetes把底层的硬件基础设备抽象为一个计算资源池暴露给�
 + master node: 保存Kubernetes的control panel，用于控制和管理整个Kubernetes系统；
 + worker node: 运行部署的应用程序；
 
-![img](/img/post/k8sArchitecture.png)
+![img](/img/post/post_k8sArchitecture.png)
 
 如上图所示，master节点主要有以下组件：
 + Kubernetes API Server: 用户交互的门户，它与其他control panel组件通信；
@@ -48,7 +48,7 @@ Kubernetes把底层的硬件基础设备抽象为一个计算资源池暴露给�
 
 下图展示了应用如何部署到Kubernetes上。用户先将要部署的四种应用打包上传至DockerHub，方便Kubernetes稍后pull image，涉及到Docker和Image的下篇再讲。然后用户将App Descriptor提交至Kubernetes的master节点，可以看到App Descriptor包含四种应用，被分为三组，其实是指三个Pod，关于Pod的概念之后再讲。master节点调度特定数量的Pod到对应的worker节点，然后worker节点开始从Docker Hub拉取容器镜像，运行容器。
 
-![img](/img/post/k8sRunApp.png)
+![img](/img/post/post_k8sRunApp.png)
 
 
 #### Container
