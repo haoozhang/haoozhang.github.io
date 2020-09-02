@@ -18,7 +18,7 @@ tags:
 虚拟机属于虚拟化技术。而Docker这样的容器技术，也是虚拟化技术，属于轻量级的虚拟化。虚拟机虽然可以隔离出很多“子电脑”，但占用空间更大，启动更慢；\
 而容器技术恰好没有这些缺点。它不需要虚拟出整个操作系统，只需要虚拟一个小规模的环境，因此启动时间很快，几秒钟就能完成。而且，它对资源的利用率很高（一台主机可以同时运行几千个Docker容器）。此外，它占的空间很小，虚拟机一般要几GB到几十GB的空间，而容器只需要MB级甚至KB级。正因为如此，容器技术受到了热烈的欢迎和追捧，发展迅速。
 
-![img](/img/post/post_VMvsContainer.png)
+![img](/img/post/post_vm_container.png)
 
 ### Docker容器平台
 
@@ -39,7 +39,7 @@ tags:
 
 下图展示了三种概念以及它们之间的关系。开发者首先构建一个Image并把它发布到Registry，这个image就可以被其他开发者通过Registry访问到，他们可以pull这个Image到自己的机器上运行。Docker基于这个Image创建一个隔离的Container并运行Image中指定的可执行文件。
 
-![img](/img/post/post_dockerFlow.png)
+![img](/img/post/post_docker_flow.png)
 
 参考自：
 1. Kuberneter in Action by Marko Luksa.
