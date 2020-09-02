@@ -37,13 +37,10 @@ tags:
 
 ### 构建、发布、运行Docker镜像
 
-下图展示了三种概念以及它们之间的关系。开发者首先构建一个Image并把它发布到Registry，这个image就可以被其他开发者通过Registry访问到，他们可以pull这个Image到自己的机器上   运行。Docker基于这个Image创建一个隔离的Container并运行Image中指定的可执行文件。
+下图展示了三种概念以及它们之间的关系。开发者首先构建一个Image并把它发布到Registry，这个image就可以被其他开发者通过Registry访问到，他们可以pull这个Image到自己的机器上运行。Docker基于这个Image创建一个隔离的Container并运行Image中指定的可执行文件。
 
 ![img](/img/post/post_dockerFlow.png)
 
 参考自：
-1. [Kubernetes 是什么?](https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/)
-2. [Kubernetes 组件](https://kubernetes.io/zh/docs/concepts/overview/components/)
-3. [Kubernetes, 2020 快速入门](https://zhuanlan.zhihu.com/p/100644716)
-4. Kuberneter in Action by Marko Luksa.
+1. Kuberneter in Action by Marko Luksa.
 
