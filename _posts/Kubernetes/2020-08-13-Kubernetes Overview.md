@@ -25,7 +25,7 @@ tags:
 
 Kubernetes把底层的硬件基础设备抽象为一个计算资源池暴露给用户。它允许用户部署和运行微服务组件，而无需了解底层微服务被调度到了哪台服务器。当通过Kubernetes部署一个多组件的应用程序时，它自动为每个组件选一个合适的服务器部署在上面，并使该组件能被其他组件发现和与其他组件通信，来保证整个应用程序的顺利运行。下图展示了Kubernetes系统的角色示意，可以看到它将应用程序和服务器节点解耦，用户只需与Kubernetes交互。
 
-![img](/img/post/k8sRole.png)
+![img](/img/post/post_k8sRole.png)
 
 上图中可以看到Kubernetes被标为master，其实Kubernetes由一个master节点和一系列worker节点组成。用户先将部署任务提交到master节点，然后master节点调度部署到worker节点。更具体地讲，
 + master node: 保存Kubernetes的control panel，用于控制和管理整个Kubernetes系统；
