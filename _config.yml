@@ -2,11 +2,11 @@
 title: Hao Blog
 SEOTitle: 张昊的博客 | Hao Blog
 header-img: img/home_bg.jpg
-email: H.Zhang@smail.nju.edu.cn
+email: h.zhang@smail.nju.edu.cn
 description: "这里是 @Hao张昊 的个人博客。"
 keyword: "张昊, Hao张昊, Hao, 张昊的博客, Hao Blog"
-url: "https://newbiecoder-hao.github.io"              # your host, for absolute URL
-baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
+url: "https://newbiecoder-hao.github.io"  # your host, for absolute URL
+baseurl: ""  # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
 future: true
@@ -18,7 +18,7 @@ github_username:     NewbieCoder-Hao
 #twitter_username:   huxpro
 #facebook_username:  huxpro
 linkedin_username:   昊-张-44b025b8
-zhihu_username:      zhang-hao-95-92
+#zhihu_username:      zhang-hao-95-92
 
 
 
@@ -59,7 +59,7 @@ kramdown:
 
 
 # Disqus settings
-disqus_username: Hao
+#disqus_username: Hao
 
 # Netease settings
 netease_comment: false
