@@ -2,7 +2,7 @@
 layout:     post
 title:      First Steps With Docker
 subtitle:   
-date:       2020-08-13
+date:       2020-08-14
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
@@ -50,7 +50,7 @@ $ docker run <image>:<tag>
 
 ### 创建一个Hello World App
 
-通过运行Docker Hub中的Hello World镜像，我们对Docker有了一个基本的印象。接下来我们看看如何构建一个自己的Docker镜像。我们以构建一个自己简单的Hello World镜像为例，首先我们写一个Hello World的应用代码。
+通过运行Docker Hub中的Hello World镜像，我们对Docker有了一个基本的印象。接下来我们看看如何构建一个自己的Docker镜像。我们以构建一个自己简单的Hello World镜像为例，首先我们写一个Hello World的应用代码。如果你不想写代码，这个项目的源码可以从[这里](https://github.com/NewbieCoder-Hao/Kubernetes_blog/tree/master/FirstStepsWithDocker)获得。
 
 ```
 public class HelloWorld {
