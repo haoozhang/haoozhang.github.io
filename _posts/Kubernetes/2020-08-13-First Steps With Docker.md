@@ -40,7 +40,7 @@ Hello world
 我们回过头再看看上面命令的执行过程。*docker run*是运行Docker镜像的命令，*busybox*是我们指定要运行的镜像，后面的*echo "Hello world"*是我们指定镜像要运行的指令，这是可选的，只针对于这个镜像。
 当我们按下回车键，可以看到Docker先在本地寻找这个名为*busybox*的镜像，发现本地不存在后从中央仓库pull这个镜像，当pull成功后会进行一次sha256校验，应该是校验拉取的镜像文件有无受损，这个我们不用在意。最后输出"Hello World"的指令。Docker的运行流程如下图所示。
 
-![img](/img/post/post_docker_run.png)
+![img](/img/post/post_dockerRun.png)
 
 最后再说明一点，可以看到上面Docker从Docker Hub拉取镜像时输出的信息是*latest: Pulling from library/busybox*，这个latest其实是指这个镜像的tag，默认的选择是latest，当然你也可以指定这个镜像的其他tag来运行，命令如下所示。这个tag可以理解为用来区分一个镜像的不同版本。
 
