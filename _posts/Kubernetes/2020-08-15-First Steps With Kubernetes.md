@@ -85,7 +85,7 @@ kubia-4jfyf   1/1      Running   0          17m
 
 我们只输入了一条运行某个镜像的命令，Kubernetes就帮我们创建了Replication Controller对象（可以通过 **kubectl get rc** 查看）来部署镜像到某个Pod上。为了更好的理解这背后发生了什么，请看下图。
 
-![img](/img/post/post_kubectl_run.png)
+![img](/img/post/post_kubectl_run1.png)
 
 我们首先把要部署的docker镜像上传到Docker Hub上，或者直接使用别人的镜像。当我们输入 **kubectl run** 的命令时，kubectl会向Kubernetes API Server发送一条REST HTTP请求来创建一个Replication Controller。然后RC会创建一个Pod，并由Kubernetes Master节点中的Scheduler将其调度到某个合适的Worker node。当这个Worker node上的kubelet发现该节点被调度了一个Pod，就会调用Docker从Docker Hub拉取运行的镜像。下载完镜像后，Docker会在这个Pod中创建容器并运行它。自此，我们可以通过**kubectl get pods**看到状态为running的Pod。
 
@@ -95,7 +95,7 @@ kubia-4jfyf   1/1      Running   0          17m
 
 为了访问Pod上运行的应用，Kubernetes引入了 Service 的概念。它可以组织一系列运行相同应用的Pod，向外统一提供一个稳定的IP地址，这个地址不会随着某个Pod的调度和销毁而改变。因此，我们可以让Pod向外暴露一个 Service，我们通过Service访问应用，如下图所示。
 
-![img](/img/post/post_service.png)
+![img](/img/post/post_service1.png)
 
 首先，创建一个名为kubia-http、类型为NodePort的Service。
 
@@ -192,7 +192,7 @@ You’ve hit kubia-4jfyf
 
 可以看到发送的请求被随机分配到某个Pod上，这就是Service帮我们做的。当只有一个Pod时，service会一直把请求分配到这个Pod，当存在多个运行相同应用的Pod时，service会随机的分配请求。下面的示意图可以与上面的图对比，帮助我们理解发生了什么。
 
-![img](/img/post/post_service_multiple_pods.png)
+![img](/img/post/post_service_multiple_pods1.png)
 
 ### Kubernetes dashboard
 
@@ -204,7 +204,7 @@ $ minikube dashboard
 
 默认浏览器会自动打开，你可以看到如下类似的界面。
 
-![img](/img/post/post_minikube_dashboard.png)
+![img](/img/post/post_minikube_dashboard1.png)
 
 以上就是本文的全部内容。我们主要学习了如何在本地计算机上安装Minikube集群，然后在其上部署运行应用。在这之后我们了解了 scale out pod的数目，以及Kubernetes提供的dashboard。
 
