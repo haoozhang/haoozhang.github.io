@@ -9,6 +9,7 @@ catalog: true
 mathjax: true
 tags:
     - Spring Boot
+    - SSL
 ---
 
 默认情况下Spring Boot应用提供基于HTTP的访问方式，例如最常见的http://127.0.0.1:8080。本文中我们实现用HTTPS访问Spring Boot应用的接口，配置方式分为在application.yaml中配置和在code中配置两种，具体如下。
