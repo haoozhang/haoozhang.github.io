@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      First Steps With Kubernetes
+title:      Chapter 4. First Steps With Kubernetes
 subtitle:   
 date:       2020-08-15
 author:     Hao

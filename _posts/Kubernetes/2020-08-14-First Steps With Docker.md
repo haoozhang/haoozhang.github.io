@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      First Steps With Docker
+title:      Chapter 3. First Steps With Docker
 subtitle:   
 date:       2020-08-14
 author:     Hao

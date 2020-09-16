@@ -26,13 +26,13 @@ tags:
 OpenSSL 查看
 
 ```
-openssl x509 -in certificate.der -inform der -text -noout
+$ openssl x509 -in certificate.der -inform der -text -noout
 ```
 
 DER 转换为 PEM 格式
 
 ```
-openssl x509 -in cert.crt -inform der -outform pem -out cert.pem
+$ openssl x509 -in cert.crt -inform der -outform pem -out cert.pem
 ```
 
 ### PEM
@@ -41,13 +41,13 @@ Privacy Enhanced Mail，一般为文本格式，以 **-----BEGIN...** 开头，�
 OpenSSL 查看
 
 ```
-openssl x509 -in certificate.pem -text -noout
+$ openssl x509 -in certificate.pem -text -noout
 ```
 
 PEM 转换为 DER 格式
 
 ```
-openssl x509 -in cert.crt -outform der -out cert.der
+$ openssl x509 -in cert.crt -outform der -out cert.der
 ```
 
 ### CRT
@@ -61,13 +61,26 @@ Predecessor of PKCS#12，这种格式是二进制格式，且证书和私钥存�
 OpenSSL 查看
 
 ```
-openssl pkcs12 -in for-iis.pfx
+$ openssl pkcs12 -in for-iis.pfx
 ```
 
 转换为 PEM
 
 ```
-openssl pkcs12 -in for-iis.pfx -out for-iis.pem -nodes
+$ openssl pkcs12 -in for-iis.pfx -out for-iis.pem -nodes
+```
+
+pfx导出crt和key
+
+```
+$ openssl pkcs12 -in example.cn.ssl.pfx -nocerts -nodes -out example.key
+$ openssl pkcs12 -in example.cn.ssl.pfx -clcerts -nokeys -out example.crt
+```
+
+crt和key合并为pfx
+
+```
+$ openssl pkcs12 -export -in certificate.crt -inkey privateKey.key -out certificate.pfx
 ```
 
 ### JKS
@@ -77,7 +90,7 @@ Java Key Storage，很容易知道这是 JAVA 的专属格式，利用 JAVA 的�
 P12/PFX 转换为 JKS
 
 ```
-keytool -importkeystore -srckeystore mypfxfile.pfx -srcstoretype pkcs12 -destkeystore newkeystore.jks -deststoretype JKS
+$ keytool -importkeystore -srckeystore mypfxfile.pfx -srcstoretype pkcs12 -destkeystore newkeystore.jks -deststoretype JKS
 ```
 
 ### 创建证书
