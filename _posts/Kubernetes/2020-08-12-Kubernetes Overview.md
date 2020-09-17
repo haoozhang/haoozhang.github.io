@@ -2,7 +2,7 @@
 layout:     post
 title:      Chapter 1. Kubernetes Overview
 subtitle:   
-date:       2020-08-13
+date:       2020-08-12
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
