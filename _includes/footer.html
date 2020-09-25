@@ -1,6 +1,7 @@
 <!-- Footer-->
 <footer>
     <div class="container">
+        <img class="log-wechat-darian-img" src="/img/wechat.jpg" alt="" />
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 
@@ -25,6 +26,15 @@
     </div>
 </footer>
 
+<style>
+.log-wechat-darian-img {
+      display: none;
+      position: fixed;
+      width:150px;
+      height:150px;
+    }
+</style>
+
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <!-- jQuery -->
@@ -39,6 +49,9 @@
 
 <!-- Simple Jekyll Search -->
 <script src="{{ "/js/simple-jekyll-search.min.js" | prepend: site.baseurl }}"></script>
+
+<!-- wenchat.jpg 展示 -->
+<script src="{{ "/js/wechatonmouse.js " | prepend: site.baseurl }}"></script>
 
 <!-- Service Worker -->
 {% if site.service-worker %}
