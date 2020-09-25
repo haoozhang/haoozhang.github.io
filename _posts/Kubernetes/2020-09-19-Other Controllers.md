@@ -2,7 +2,7 @@
 layout:     post
 title:      Chapter 7. Other Controllers
 subtitle:   deploying managed pods
-date:       2020-09-17
+date:       2020-09-19
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
