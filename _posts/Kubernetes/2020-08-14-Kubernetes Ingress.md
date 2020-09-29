@@ -45,7 +45,7 @@ spec:
 
 上面展示了单服务的 Ingress 示例，下面展示流量从单个 IP 地址路由到多个服务。
 
-```java
+```
 foo.bar.com -> 178.91.123.132 -> /foo  service1:4200 
                                  /bar  service2:8080 
 ```
