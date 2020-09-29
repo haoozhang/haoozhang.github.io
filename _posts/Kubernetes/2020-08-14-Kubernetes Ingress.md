@@ -60,7 +60,7 @@ metadata:
 spec: 
     rules: 
     - host: foo.bar.com 
-    http: 
+      http: 
         paths: 
         - path: /foo 
           backend: 
@@ -130,24 +130,28 @@ type: kubernetes.io/tls
 
 然后在Ingress中引用此 Secret 将会告诉 Ingress 控制器使用 TLS 加密从客户端到Service的通道。
 
-```
+```yml
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: tls-example-ingress
+  name: ingress-example
 spec:
   tls:
   - hosts:
-    - sslexample.foo.com
+    - foo.bar.com
     secretName: testsecret-tls
-  rules:
-    - host: sslexample.foo.com
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: service1
-            servicePort: 80
+  rules: 
+    - host: foo.bar.com 
+      http: 
+        paths: 
+        - path: /foo 
+          backend: 
+            serviceName: service1 
+            servicePort: 8080 
+        - path: /bar 
+          backend: 
+            serviceName: service2 
+            servicePort: 8080
 ```
 
 参考自：
