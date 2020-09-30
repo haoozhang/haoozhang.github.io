@@ -31,7 +31,7 @@ tags:
 
 + rolling update：新建一个 v2 版本 Pod，删除一个 v1 版本 Pod，逐步更新所有。
 
-![img](/img/post/post_rolling_update.png)
+![img](/img/post/post_rollingupdate.png)
 
 分别对应以下三种图示，看图一目了然。
 
