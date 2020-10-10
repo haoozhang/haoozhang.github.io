@@ -11,12 +11,6 @@ tags:
     - Kubernetes
 ---
 
-### DaemonSets
-
-引入一张图
-只在某些Node上运行
-
-### Job
 
 ### CronJob
 
