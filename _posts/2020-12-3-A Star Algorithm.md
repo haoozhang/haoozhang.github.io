@@ -45,11 +45,11 @@ Dijkstra算法是由计算机科学家Edsger W. Dijkstra在1956年提出的，�
 
 这样做可以大大加快路径的搜索速度，如下图示例所示：
 
-![img](/img/post/dijkstra.gif)
+![img](/img/post/best_first.gif)
 
 但这种算法有啥缺点呢？想想如果起点和终点之间存在障碍物，则最佳优先算法搜索的结果可能不是最短路径，如下图所示：
 
-![img](/img/post/dijkstra.gif)
+![img](/img/post/best_first2.gif)
 
 ### A* 算法
 
@@ -107,9 +107,8 @@ A* 算法在运行过程中，每次从优先队列中选取 $f(n)$ 值最小 (�
 
 ### 算法实现
 
-前面介绍了很多 A* 的理论内容，但实际上 A* 的算法实现并不复杂，下面给出 Java 代码的示例。
-
-算法源码见[这里]()。
+前面介绍了很多 A* 的理论内容，但实际上 A* 的算法实现并不复杂，下面给出 Java 代码的示例。\
+算法源码见[这里](https://github.com/Hoozhang/A-Star-Algorithm)。
 
 参考自：
 1. [路径规划之 A* 算法](https://paul.pub/a-star-algorithm/)
