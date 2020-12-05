@@ -5,7 +5,11 @@ header-img: img/home_bg.jpg
 email: h.zhang@smail.nju.edu.cn
 description: "这里是 @Hao张昊 的个人博客。"
 keyword: "张昊, Hao张昊, Hao, 张昊的博客, Hao Blog"
+<<<<<<< HEAD
 url: "https://hoozhang.github.io"  # your host, for absolute URL
+=======
+url: "https://haozhang.github.io"  # your host, for absolute URL
+>>>>>>> d9b6caefac4dd083d1e87548cbae6850a4f91799
 baseurl: ""  # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
