@@ -12,7 +12,7 @@ tags:
     - Searching
 ---
 
-A Star 算法是一种很常用的路径查找和图形遍历算法，最初发表于1968年，由Stanford研究院的Peter Hart, Nils Nilsson以及Bertram Raphael提出。它可以被认为是Dijkstra算法的扩展，由于借助启发函数的引导，A*算法通常拥有更好的性能。
+A Star 算法是一种很常用的路径查找和图形遍历算法，最初发表于1968年，由 Stanford 研究院的 Peter Hart, Nils Nilsson 以及 Bertram Raphael 提出。它可以被认为是Dijkstra算法的扩展，由于借助启发函数的引导，A*算法通常拥有更好的性能。
 
 ### 从 BFS 开始
 
