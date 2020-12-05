@@ -5,7 +5,7 @@ header-img: img/home_bg.jpg
 email: h.zhang@smail.nju.edu.cn
 description: "这里是 @Hao张昊 的个人博客。"
 keyword: "张昊, Hao张昊, Hao, 张昊的博客, Hao Blog"
-url: "https://newbiecoder-hao.github.io"  # your host, for absolute URL
+url: "https://hoozhang.github.io"  # your host, for absolute URL
 baseurl: ""  # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
@@ -14,7 +14,7 @@ future: true
 # SNS settings
 RSS: false
 #weibo_username:     huxpro
-github_username:     NewbieCoder-Hao
+github_username:     Hoozhang
 #twitter_username:   huxpro
 #facebook_username:  huxpro
 linkedin_username:   hao-zhang-44b025b8
