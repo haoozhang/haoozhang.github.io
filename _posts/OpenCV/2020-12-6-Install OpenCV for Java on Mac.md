@@ -12,11 +12,11 @@ tags:
     - Mac
 ---
 
-之前介绍了在 Windows 环境下新建 OpenCV for Java 的 IDEA 项目，这里我们介绍在 Mac 环境下的 OpenCV for Java 搭建。因为官方没有直接提供 OpenCV 的 jar 包，所以需要我们手动编译生成。
+之前介绍了在 Windows 环境下新建 OpenCV for Java 的 IDEA 项目，这里我们介绍在 Mac 环境下的 OpenCV for Java 搭建。因为官方没有直接提供 OpenCV 的 jar 包，所以需要我们手动编译生成。下面是详细步骤。
 
 1. 下载安装 IDEA：此处省略不再赘述。
 
-2. 安装OpenCV：根据官方教程，需要依次安装 Homebrew，Xcode Command Line Tools 以及 ant。然后我们修改 OpenCV 的 formula，就可以编译安装 OpenCV了。
+2. 安装OpenCV：根据官方教程 (见下图)，需要依次安装 Homebrew，Xcode Command Line Tools 以及 ant。然后我们修改 opencv formula，就可以编译安装 OpenCV了。
 
 ![img](/img/post/makeOpenCV.png)
 
@@ -30,10 +30,7 @@ tags:
 
 + Create a new project。
 
-+ 在 File -> Project Structure -> Library 中添加 OpenCV 对应的 jar 包。
-
-+ 在Run—Edit Configurations中，VM Options一栏添加JVM启动参数：
-        -Djava.library.path=/usr/local/Cellar/opencv/3.4.2/share/OpenCV/java (写到jar包所在目录)
++ 在 File -> Project Structure -> Library 中添加 OpenCV 对应的库，默认在 /usr/local/Cellar 目录下。
 
 + 在主类中添加如下静态代码块，使程序运行前提前加载好 OpenCV 库。
 
@@ -43,7 +40,19 @@ static {
 }
 ```
 
-接下来就可以正常调用 OpenCV 中的库函数了！
++ 在Run—Edit Configurations中，VM Options一栏添加JVM启动参数：\
+-Djava.library.path=/usr/local/Cellar/opencv/3.4.2/share/OpenCV/java (写到jar包所在目录)
+
+接下来就可以正常调用 OpenCV 中的库函数了！下面这个示例代码可用来测试。
+
+```java
+public static void main(String[] args) {
+        Mat mat = Imgcodecs.imread("./test.png");
+        Mat grayMat = new Mat();
+        Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_BGR2YCrCb);
+        Imgcodecs.imwrite("gray.png", grayMat);
+}
+```
 
 参考自：
 1. [OpenCV Java Tutorials](https://opencv-java-tutorials.readthedocs.io/en/latest/01-installing-opencv-for-java.html#set-up-opencv-for-java-in-other-ides-experimental)
