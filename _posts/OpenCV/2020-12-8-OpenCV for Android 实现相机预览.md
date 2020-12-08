@@ -132,7 +132,7 @@ public void onResume() {
 };
 ```
 
-至此，我们就完成了设备相机打开以及帧画面的预览获取。完整源码见[这里]()。
+至此，我们就完成了设备相机打开以及帧画面的预览获取。完整源码见[这里](https://github.com/Hoozhang/Opencv4AndroidDemo)。
 
 
 参考自：
