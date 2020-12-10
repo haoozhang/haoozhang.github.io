@@ -86,11 +86,10 @@ mCVCamera.setCvCameraViewListener(this);
 接下来修改 onCameraFrame 回调方法的内容，相机刷新每一帧都会调用一次，输入参数是当前相机视图信息，我们直接获取其中的 RGBA 信息作为 Mat 数据返回给显示组件即可：
 
 ```java
-    @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame frame) {
-        // TODO: image processing for yourself
-        return frame.rgba();
-    }
+@Override
+public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame frame) {
+    // TODO: image processing for yourself
+    return frame.rgba();
 }
 ```
 

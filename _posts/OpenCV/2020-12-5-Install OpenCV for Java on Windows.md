@@ -35,5 +35,12 @@ static {
 
 接下来就可以正常调用 OpenCV 中的库函数了！下面这个示例代码可用来测试。
 
-
+```java
+public static void main(String[] args) {
+        Mat mat = Imgcodecs.imread("./test.png");
+        Mat grayMat = new Mat();
+        Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_BGR2YCrCb);
+        Imgcodecs.imwrite("gray.png", grayMat);
+}
+```
 
