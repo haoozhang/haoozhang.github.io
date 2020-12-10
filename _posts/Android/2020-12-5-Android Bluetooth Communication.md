@@ -145,4 +145,4 @@ class AcceptThread extends Thread {
 
 
 参考自：
-1. [路径规划之 A* 算法](https://paul.pub/a-star-algorithm/)
+1. [Android 开发者文档-蓝牙概览](https://developer.android.com/guide/topics/connectivity/bluetooth)
