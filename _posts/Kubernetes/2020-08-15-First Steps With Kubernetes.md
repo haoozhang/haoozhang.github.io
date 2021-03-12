@@ -211,5 +211,5 @@ $ minikube dashboard
 以上就是本文的全部内容。我们主要学习了如何在本地计算机上安装 Minikube 集群，然后在其上部署运行应用。在这之后我们了解了 scale out Pod，以及 Kubernetes 提供的 dashboard。在这一篇我们引入了几个新的对象概念（Pod, Replication Controller, Service），下一篇我们介绍 Kubernetes 中最基本的概念 Pod。
 
 参考自：
-1. Kuberneter in Action by Marko Luksa.
+1. 《Kuberneter in Action》 by Marko Luksa.
 
