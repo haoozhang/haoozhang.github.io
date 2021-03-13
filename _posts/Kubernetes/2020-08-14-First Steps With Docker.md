@@ -112,7 +112,7 @@ ENTRYPOINT ["java", "-jar","app.jar"]
 docker build -t zhaodockerhub/helloworld .
 ```
 
-*docker build* 命令与 *docker run* 相似，是构建镜像的命令。*-t* 是指定镜像的名字和 tag，这里默认 tag 为 latest。别忘了最后空格之后还有一个点，用来指定当前要构建镜像的目录。
+*docker build* 命令格式与 *docker run* 相似，是构建镜像的命令。*-t* 是指定镜像的名字和 tag，这里默认 tag 为 latest。别忘了最后空格之后还有一个点，用来指定当前要构建镜像的目录。
 
 这里注意一点，镜像名字我选择了\<Docker Hub username>/\<image name>。这是因为之后上传到 Docker Hub 时要具体到你的 Docker Hub 用户名，现在指定之后就不用重新 tag 了。当然你也可以之后运行 *docker tag* 命令重新指定镜像名字。
 
@@ -141,21 +141,21 @@ $ docker rm <image name>
 
 ### 分享镜像
 
-现在你构建的镜像还只是存储在本地，只能在本地的机器上运行。正如之前说到的，我们可以把自己构建的镜像上传到一个中央仓库（Docker Hub），分享给别的用户。首先，你需要在 Docker Hub 上注册一个账户。然后你就可以往自己的仓库下 push 镜像了。
+现在你构建的镜像还只是存储在本地，只能在本地的机器上运行。正如之前说到的，我们可以把自己构建的镜像上传到一个中央仓库（DockerHub），分享给别的用户。首先，你需要在 DockerHub 上注册一个账户。然后你就可以往自己的仓库下 push 镜像了。
 
-Docker Hub上传镜像时要求镜像名称为\<Docker Hub username>/\<image name>，如果不是，要先重命名你的镜像。
+Docker Hub上传镜像时要求镜像名称为\<DockerHub username>/\<image name>，如果不是，要先重命名你的镜像。
 
 ```
-$ docker tag <image name> <Docker Hub username>/<image name>
+$ docker tag <image name> <DockerHub username>/<image name>
 ```
 
 其实 *docker tag* 并没有重命名该镜像，而是创建了这个镜像的一个副本，并命名为新的名称，你可以运行 *docker images* 查看。现在你可以通过以下命令上传你的镜像。
 
 ```
-$ docker push <Docker Hub username>/<image name>
+$ docker push <DockerHub username>/<image name>
 ```
 
-上传结束后，你也可以在 Docker Hub 上看到刚刚分享的镜像。这样别人或者你在别处就可以使用刚刚构建的镜像，而无需安装任何其他环境。
+上传结束后，你也可以在 DockerHub 上看到刚刚分享的镜像。这样别人或者你在别处就可以使用刚刚构建的镜像，而无需安装任何其他环境。
 
 ### 小结
 

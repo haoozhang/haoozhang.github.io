@@ -11,20 +11,14 @@ tags:
     - Kubernetes
 ---
 
-我们已经学习了如何把应用程序打包成 Docker 镜像，并上传至 Docker Hub 以分享给他人使用。本文我们要做的是把打包的镜像部署运行到 Kubernetes 集群上，而非直接在 Docker 中运行。在此之前，我们首先需要建立一个 Kubernetes 集群。
+我们已经学习了如何把应用程序打包成 Docker 镜像，并上传至 DockerHub 以分享给他人使用。本文我们要做的是把打包的镜像部署运行到 Kubernetes 集群上，而非直接在 Docker 中运行。在此之前，我们首先需要建立一个 Kubernetes 集群。
 
 ### 建立本地的单节点集群 Minikube
 
 建立一个真正意义上的多节点 Kubernetes 集群并非易事，这涉及到多个分布的物理机和虚拟机，并且要配置合适的网络路由以保证之间的通信。当然现在各大云计算服务商提供了云上的 Kubernetes 集群平台，比如 Google Kubernetes
 Engine、Amazon Elastic Kubernetes Service、Azure Kubernetes Service 等等，有兴趣的可以了解一下。本文中我们在本地建立 Minikube，它在你电脑中的虚拟机上运行一个单节点的 Kubernetes 集群。
 
-安装 Minikube 的详细步骤请参考[官方文档](https://kubernetes.io/zh/docs/tasks/tools/install-minikube/)。这里只简单地罗列一下安装所需的工具和步骤。
-
-1. 检查系统是否支持虚拟化技术，不支持的可下载 Virtual Box 解决。
-2. 安装 Kubectl，它是和 Kubernetes 交互的客户端，可参考[这里](https://kubernetes.io/zh/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux)来安装。
-3. 安装 Minikube，可通过命令安装或直接下载安装，具体参考上面的官方文档。
-
-要确认 Minikube 已成功安装，可以运行以下命令来启动本地 Kubernetes 集群：
+安装 Minikube 的详细步骤请参考[官方文档](https://github.com/kubernetes/minikube)。要确认 Minikube 已成功安装，可以运行以下命令来启动本地 Kubernetes 集群：
 
 ```
 $ minikube start
@@ -36,7 +30,8 @@ $ minikube start
 $ minikube start --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 ```
 
-若要为 minikube start 设置 --vm-driver，在下面提到 \<driver-name> 的地方， 用小写字母输入你安装的 VM 驱动程序的名称。 [这里](https://kubernetes.io/zh/docs/setup/learning-environment/minikube/#specifying-the-vm-driver)列举了 --vm-driver 值的完整列表。
+若要为 minikube start 设置 --vm-driver，在下面提到 \<driver-name> 的地方， 用小写字母输入你安装的 VM 驱动程序的名称。如果事先已经下载了 Docker，则 Minikube 启动时应该会自动选择。
+Google 一下就可以找到 --vm-driver 值的完整列表。
 
 ```
 $ minikube start --vm-driver=<driver-name>
@@ -57,21 +52,28 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
+### 安装 Kubernetes Client
+
+为了与 Kubernetes 交互，我们还需要名为 *kubectl* 的 CLI 客户端。请参考官方文档下载。为了验证集群是否在工作，可以使用 *kubectl cluster-info* 命令。
+
+```
+$ kubectl cluster-info
+Kubernetes master is running at https://192.168.99.100:8443
+KubeDNS is running at https://192.168.99.100:8443/api/v1/proxy/... kubernetes-dashboard is running at https://192.168.99.100:8443/api/v1/...
+```
+
 ### 在Minikube上部署应用
 
 由于这是第一次上手 Kubernetes，我们选择用最简单的方式在集群上运行一个应用。但要注意的是，正常情况下我们应该准备一个 .yaml 文件，它描述了我们要如何部署应用的所有配置。
 
-在 Kubernetes 上运行应用的最简单方式是 **kubectl run**命令。通过一条命令，它可以自动帮我们创建所需要的所有对象，我们暂时不用关注 .yaml 文件和各种对象。这里我们选择 Docker Hub 上已有的 docker 镜像演示，如下。
+在 Kubernetes 上运行应用的最简单方式是 **kubectl run**命令。通过一条命令，它可以自动帮我们创建所需要的所有对象，我们暂时不用关注 .yaml 文件和各种对象。这里我们选择 DockerHub 上已有的 docker 镜像演示，如下。
 
 ```
-$ kubectl run kubia --image=luksa/kubia --port=8080 --generator=run/v1
-kubectl run --generator=run/v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
-replicationcontroller/kubia created
+$ kubectl run kubia --image=luksa/kubia --port=8080                        
+pod/kubia created
 ```
 
-**--image=luksa/kubia** 参数指定了我们想运行的镜像。**--port=8080** 表示应用监听的端口为8080。**--generator** 参数让 Kubernetes 创建了一个Replication Controller 帮我们部署应用，这个对象我们之后再了解。可以看到一个 warning 说这条命令其实已经过时了，所以建议正式场景下不要再使用了，这里我们只做演示。
-
-现在我们的应用其实已经部署在 Kubernetes 上了。为了验证这一点，我们可以使用下面的命令查看。
+**--image=luksa/kubia** 参数指定了我们想运行的镜像。**--port=8080** 表示应用监听的端口为8080。**kubia** 是我们创建的名字。可以看到输出信息时 **pod/kubia created**，所以现在我们的应用其实已经部署在 Kubernetes 上了。为了验证这一点，我们可以使用下面的命令查看。
 
 ```
 $ kubectl get pods
@@ -79,28 +81,28 @@ NAME          READY    STATUS    RESTARTS   AGE
 kubia-4jfyf   1/1      Running   0          17m
 ```
 
-这里我们又引入了一个名为 Pod 的对象。它是 Kubernetes 上最小的计算单元，有独立的 IP、hostname 等资源，一个 Pod 上可能运行多个容器，现在只需要知道这一些就好。通过查看 Pod，我们可以看到 kubia 这个镜像的状态是 running，代表部署成功已正常运行。如果状态显示为 ContainerCreating 或者是 Pending，表示正在创建容器或在等待队列中排队，请稍等一会再查看。
+这里我们引入了一个名为 **Pod** 的对象。它是 Kubernetes 上最小的计算单元，有独立的 IP、hostname 等资源，一个 Pod 上可能运行多个容器，现在只需要知道这一些就好。通过查看 Pod，我们可以看到 kubia 这个镜像的状态是 running，代表部署成功已正常运行。如果状态显示为 ContainerCreating 或者是 Pending，表示正在创建容器或在等待队列中排队，请稍等一会再查看。
 
 ### 部署命令背后
 
-我们只输入了一条运行某个镜像的命令，Kubernetes 就帮我们创建了 Replication Controller 对象（可以通过 **kubectl get rc** 查看）来部署镜像到某个Pod上。为了更好的理解这背后发生了什么，请看下图。
+我们只输入了一条运行某个镜像的命令，Kubernetes 就帮我们创建了 Pod 并部署了镜像。为了更好的理解这背后发生了什么，请看下图。
 
 ![img](/img/post/post_kubectl_run1.png)
 
-我们首先把要部署的 docker 镜像上传到 Docker Hub 上，或者直接使用别人的镜像。当我们输入 **kubectl run** 的命令时，kubectl 会向 Kubernetes API Server 发送一条 REST HTTP 请求来创建一个 Replication Controller。然后 RC 会创建一个 Pod，并由 Kubernetes Master 节点中的 Scheduler 将其调度到某个合适的 Worker node。当这个 Worker node 上的 kubelet 发现该节点被调度了一个 Pod，就会调用 Docker 从 Docker Hub 拉取运行的镜像。下载完镜像后，Docker 会在这个 Pod 中创建容器并运行它。自此，我们可以通过 **kubectl get pods** 看到状态为 running 的 Pod。
+我们首先把要部署的 docker 镜像上传到 DockerHub 上，或者直接使用别人的镜像。当我们输入 **kubectl run** 的命令时，kubectl 会向 Kubernetes API Server 发送一条 REST HTTP 请求来创建一个 Pod，并由 Kubernetes Master 节点中的 Scheduler 将其调度到某个合适的 Worker node。当这个 Worker node 上的 kubelet 发现该节点被调度了一个 Pod，就会调用 Docker 从 DockerHub 拉取运行的镜像。下载完镜像后，Docker 会在这个 Pod 中创建容器并运行它。自此，我们可以通过 **kubectl get pods** 看到状态为 running 的 Pod。
 
 ### 访问部署成功的应用
 
 如何访问在 Kubernetes 上部署的应用呢？你可能会想到，利用刚才提到的 Pod 的 IP 地址我去访问。但这个 IP 是集群内部的地址，而且 Pod 的生命周期是不确定，它可能会被调度到其他node，也可能被销毁，这样就访问不到它了。
 
-为了访问 Pod 上运行的应用，Kubernetes 引入了 Service 的概念。它可以组织一系列运行相同应用的 Pod，向外统一提供一个稳定的 IP 地址，这个地址不会随着某个 Pod 的调度和销毁而改变。因此，我们可以让 Pod 向外暴露一个 Service，我们通过 Service 访问应用，如下图所示。
+为了访问 Pod 上运行的应用，Kubernetes 引入了 **Service** 的概念。它可以组织一组运行相同应用的 Pod，向外统一提供一个稳定的 IP 地址，这个地址不会随着某个 Pod 的调度和销毁而改变。因此，我们可以让 Pod 向外暴露一个 Service，我们通过 Service 访问应用，如下图所示。
 
 ![img](/img/post/post_service1.png)
 
 首先，创建一个名为kubia-http、类型为 NodePort 的Service。
 
 ```
-$ kubectl expose rc kubia --type=NodePort --name kubia-http
+$ kubectl expose pod kubia --type=NodePort --name kubia-http
 service "kubia-http" exposed
 ```
 
@@ -132,6 +134,8 @@ You’ve hit kubia-4jfyf
 ```
 
 ### 应用 Scale Out
+
+<font color=Red>**Warning: 因为 Kubernetes 更新之后 *kubectl run* 命令没有创建管理 Pod 的 controller，所以这一小节暂时过时，请忽略。在之后章节详述 controllers 和 scale out/in。**</font>
 
 现在我们已经部署运行并成功访问到了 Kubernetes 中的应用。接下来我们再展示一下 Kubernetes 的自动管理能力。之前我们也提到了 Kubernetes 的出发点就是作为一套方便 Developer 和 Deployer 的自动化管理工具，所以这里我们测试一下它如何水平扩展(scale out/in)。
 
