@@ -25,6 +25,8 @@ tags:
 
 Kubernetes 把底层的硬件基础设备抽象为一个计算资源池暴露给用户。它允许用户部署和运行微服务组件，而无需了解底层微服务被调度到了哪台服务器。当通过 Kubernetes 部署一个多组件的应用程序时，它自动为每个组件选一个合适的服务器部署在上面，并使该组件能被其他组件发现和与其他组件通信，来保证整个应用程序的顺利运行。下图展示了 Kubernetes 系统的角色示意，可以看到它将应用程序和服务器节点解耦，用户只需与Kubernetes交互。
 
+[多说一句] 在 Kubernetes 出现之前，公司也逐渐意识到，让 Dev 团队参与到应用的部署和运维会更好，这种模式被称为 DevOps。而现在通过抽象底层硬件、只向上层暴露一个部署运行 App的平台，Kubernetes 可以让 Dev 团队直接参与全生命周期的应用部署，而无需 Ops 团队的协助，可称为 NoOps。
+
 ![img](/img/post/post_k8sRole.png)
 
 上图中可以看到 Kubernetes 被标为 master，其实 Kubernetes 由一个 master 节点和一系列 worker 节点组成。用户先将部署任务提交到 master 节点，然后 master 节点调度部署到 worker 节点。更具体地讲，
@@ -49,6 +51,16 @@ Kubernetes 把底层的硬件基础设备抽象为一个计算资源池暴露给
 下图展示了应用如何部署到 Kubernetes 上。用户先将要部署的四种应用打包上传至 DockerHub，方便稍后 Kubernetes pull image，涉及到 Docker 和 Image 的下篇再讲。然后用户将 App Descriptor 提交至 Kubernetes 的 master 节点，可以看到 App Descriptor 包含四种应用，被分为三组，其实是指三个 Pod，关于 Pod 的概念之后再讲。master 节点调度特定数量的 Pod 到对应的 worker 节点，然后 worker 节点开始从 Docker Hub 拉取容器镜像，运行容器。
 
 ![img](/img/post/post_k8sRunApp.png)
+
+### 理解使用Kubernetes的好处
+
+1. 简化应用的部署。因为 Kubernetes 已将所有的 Worker Node 抽象为一个部署平台，所以应用开发者可以自己部署应用，而无需了解集群中 Server 的具体信息。当然，如果在某种情况下确实需要将应用部署在某特定要求的节点上，例如，需要将某个应用部署在有 SSD 的节点上，我们就可以告诉 Kubernetes 为该应用选择一个配有 SSD 的节点，至于如何选、选择哪一个就留给 K8S 自己完成。我们留在之后详细介绍。
+
+2. 资源利用更高。Kubernetes 将 App 和底层资源解耦，当告诉它运行某个应用时，它会基于应用的描述为其选择最合适的节点。并且，当节点故障时，它会自动迁移应用到另一个合适的节点。
+
+3. 健康核查和自动恢复。随着集群机器逐渐增多，节点故障就会更加频繁。Kubernetes 会监视运行的应用和节点，当发生故障时，会重新调度。这就极大解放了 Ops 团队。
+
+4. 自动放缩。使用Kubernetes管理已部署的应用程序，还意味着 Ops 团队无需不断监视各个应用程序的负载以应对突然的负载高峰。如上所述，可以告诉 Kubernetes 监视每个应用程序使用的资源，并不断调整每个应用程序的运行实例数。
 
 ### 小结
 
