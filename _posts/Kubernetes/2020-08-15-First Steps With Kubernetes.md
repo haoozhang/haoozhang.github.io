@@ -135,7 +135,7 @@ You’ve hit kubia-4jfyf
 
 ### 应用 Scale Out
 
-<font color=Red>**Warning: 因为 Kubernetes 更新之后 *kubectl run* 命令没有创建管理 Pod 的 controller，所以这一小节暂时过时，请忽略。在之后章节详述 controllers 和 scale out/in。**</font>
+**<font color=Red>Warning: 因为 Kubernetes 更新之后 *kubectl run* 命令没有创建管理 Pod 的 controller，所以这一小节暂时过时，请忽略。在之后章节详述 controllers 和 scale out/in。</font>**
 
 现在我们已经部署运行并成功访问到了 Kubernetes 中的应用。接下来我们再展示一下 Kubernetes 的自动管理能力。之前我们也提到了 Kubernetes 的出发点就是作为一套方便 Developer 和 Deployer 的自动化管理工具，所以这里我们测试一下它如何水平扩展(scale out/in)。
 
