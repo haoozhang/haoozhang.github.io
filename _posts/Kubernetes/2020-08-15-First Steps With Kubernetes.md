@@ -78,7 +78,7 @@ pod/kubia created
 ```
 $ kubectl get pods
 NAME          READY    STATUS    RESTARTS   AGE
-kubia-4jfyf   1/1      Running   0          17m
+kubia         1/1      Running   0          17m
 ```
 
 这里我们引入了一个名为 **Pod** 的对象。它是 Kubernetes 上最小的计算单元，有独立的 IP、hostname 等资源，一个 Pod 上可能运行多个容器，现在只需要知道这一些就好。通过查看 Pod，我们可以看到 kubia 这个镜像的状态是 running，代表部署成功已正常运行。如果状态显示为 ContainerCreating 或者是 Pending，表示正在创建容器或在等待队列中排队，请稍等一会再查看。
@@ -130,9 +130,10 @@ http://127.0.0.1:53750
 
 ```
 $ curl http://127.0.0.1:53750
-You’ve hit kubia-4jfyf
+You’ve hit kubia
 ```
 
+<!--
 ### 应用 Scale Out
 
 **<font color=Red>Warning: 因为 Kubernetes 更新之后 *kubectl run* 命令没有创建管理 Pod 的 controller，所以这一小节暂时过时，请忽略。在之后章节详述 controllers 和 scale out/in。</font>**
@@ -197,6 +198,7 @@ You’ve hit kubia-4jfyf
 可以看到发送的请求被随机分配到某个 Pod上，这就是 Service 帮我们做的。当只有一个 Pod 时，Service 会一直把请求分配到这个 Pod，当存在多个运行相同应用的 Pod 时，Service 会随机的分配请求。下面的示意图可以与上面的图对比，帮助我们理解发生了什么。
 
 ![img](/img/post/post_service_multiple_pods1.png)
+-->
 
 ### Kubernetes dashboard
 
