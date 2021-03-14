@@ -11,13 +11,13 @@ tags:
     - Kubernetes
 ---
 
-上篇我们介绍了 Pod 的创建和使用，但是手动创建的 Pod 必须要我们自己管理它的生命周期。在实际应用中我们并不直接手动创建 Pod，而是通过 Kubernetes 中的某些资源间接创建，然后由它来自动监视和管理这些 Pod。
+上篇我们介绍了 Pod 的创建和使用，但是手动创建的 Pod 必须要我们自己管理它的生命周期。在实际应用中我们肯定希望 Pod 自动运行和保持健康状态。所以，我们并不直接手动创建 Pod，而是通过 Kubernetes 中的某些资源间接创建，然后由它来自动监视和管理这些 Pod。
 
 ### Liveness 探针: Keep Pods healthy
 
 本系列第一篇中我们说过，Kubernetes 是作为一套自动化管理工具被提出的。当我们创建一个 Pod 后，Kubernetes 会调度到某一个合适的 Node 上启动运行容器，然后 Node 上的 kubelet 会负责维护容器的运行状态。当 Pod 中的容器终止（比如主进程crash）时，kubelet会自动重启这个容器。
 
-但是并不是所有的异常状态都能被 kubelet 捕捉到从而重启容器，比如容器可能由于陷入死循环或者死锁状态无法响应外部的请求，此时 kubelet 并不能捕捉到这种异常，因为容器仍然处于 running 状态。为了能够及时的处理这种情况，我们必须周期性的从外部检测 Pod 中应用的运行状态，由此引入 Liveness 探针。
+但是并不是所有的异常状态都能被 kubelet 捕捉到从而重启容器，比如容器可能由于陷入死循环或者死锁状态无法响应外部的请求，此时 kubelet 并不能捕捉到这种异常，因为容器仍然处于 running 状态。为了能够及时的处理这种情况，我们必须周期性的从外部检测 Pod 中应用的运行状态，由此引入 Liveness 探针。我们可以在 Pod 的描述中创建探针，Kubernetes 会周期性地执行探针，如果探针失败，就自动重启这个容器。
 
 如下创建一个 Liveness 探针，它告诉 Kubernetes 周期性的执行 HTTP 请求访问应用的8080端口，来判断应用是否正常运行。
 
@@ -31,7 +31,7 @@ spec:
   - image: luksa/kubia-unhealthy
     name: kubia
     livenessProbe:
-      httpGet:
+      httpGet:    # 探针执行HTTP的GET请求
         path: /
         port: 8080
 ```
@@ -55,10 +55,16 @@ livenessProbe:
   httpGet:
     path: /
     port: 8080
-  initialDelaySeconds: 15
+  initialDelaySeconds: 15   # 在执行第一次探查时等待15s
 ```
 
 其实一般都建议要设置这个参数，因为容器刚启动可能没有准备好响应请求，探针立刻探查的话可能会导致重启。另外要注意的是，应该尽可能让探针轻量化，一般我们在程序中设置 **/health** 路径以供探测。如果在工程中包含了 **spring-boot-starter-actuator** 依赖，它会自动探测 **/actuator/health** 路径。
+
+我们现在已经了解到，如果容器crash了或者Liveness探查失败了，Kubernetes 会重新启动容器来保证运行。这些工作都是由 Worker Node 上的 Kubelet 完成的，运行在 Master Node 上的 Control Panel 并没有参与。
+
+但是如果 Worker Node 本身crash了，Control Panel 必须为这个 Node 上的容器创建复制品，但我们直接创建的容器除外。我们直接创建的容器只受 Kubelet 管理，但现在节点 crash，Kubelet 不能执行任何操作，所以这些容器将会丢失。
+
+为了保证应用可以在别的 Node 上重新启动，Pod 必须被 Replication Controller 或其他类似的对象管理，这就是我们下一节讨论的内容。
 
 ### 引入 Replication Controller
 
@@ -66,11 +72,11 @@ ReplicationController 是确保它管理的 Pod 能一直保持运行的一种�
 
 ![img](/img/post/post_intro_rc1.png)
 
-上面这张图只展示了 ReplicationController 管理一个 Pod，当然它也可以管理多个 Pod。ReplicationController的工作其实就是确保它管理的一组 Pod 按照设定的数量运行。当 Pod 数量少了，它就再创建一个。Pod 数量多了，它就选择一个终止运行。工作流程如下图所示。
+上面这张图只展示了 ReplicationController 管理一个 Pod，当然它也可以管理多个 Pod。ReplicationController 的工作其实就是确保它管理的一组 Pod 按照设定的数量运行。当 Pod 数量少了，它就再创建一个。Pod 数量多了，它就选择一个终止运行。工作流程如下图所示。
 
 ![img](/img/post/post_intro_rc2.png)
 
-所以，它主要是由三个必要的部分组成，label selector用来选择它管理哪些 Pod；Replicas Count指定理想中应该运行 Pod 的数量；Pod Template被用来创建新的 Pod。
+所以，它主要是由三个必要的部分组成，label selector 用来选择它管理哪些 Pod；Replicas Count 指定理想中应该运行 Pod 的数量；Pod Template 被用来创建新的 Pod。
 
 ![img](/img/post/post_rc_parts.png)
 
@@ -80,14 +86,14 @@ ReplicationController 是确保它管理的 Pod 能一直保持运行的一种�
 
 ```yaml
 apiVersion: v1
-kind: ReplicationController
+kind: ReplicationController   # 描述文件定义了一个rc
 metadata:
   name: kubia
 spec:
-  replicas: 3
-  selector:
+  replicas: 3   # 目标数目
+  selector:     # 管理哪些Pod
     app: kubia
-  template:
+  template:     # Pod template
     metadata:
       labels:
         app: kubia
@@ -101,6 +107,8 @@ spec:
 
 然后用 **kubectl create -f kubia-rc.yaml** 命令创建。此时集群会创建一个名为 kubia 的 ReplicationController，它管理标签为 **app: kubia** 的Pod，Pod 数量设为3，如果需要创建 Pod，则利用 template 中描述的容器和镜像。
 
+Tip：建议不要在 RC 的描述文件中指定 Pod Selector，让 Kubernetes 自动从 Pod Template 中提取，可以使得YAML文件更简洁。
+
 查看创建的 Pod。
 
 ```
@@ -109,6 +117,14 @@ NAME          READY   STATUS                RESTARTS    AGE
 kubia-53thy   0/1     ContainerCreating     0           2s
 kubia-k0xz6   0/1     ContainerCreating     0           2s
 kubia-q3vkg   0/1     ContainerCreating     0           2s
+```
+
+可以看到 Pod 正在创建容器，此时查看创建的 ReplicationController，可以看到目标数目，当前数目和已经准备好的数目。
+
+```
+kubectl get rc
+NAME      DESIRED   CURRENT   READY     AGE
+kubia     3         0         0         3s
 ```
 
 ### 手动删除一个 Pod

@@ -15,19 +15,19 @@ tags:
 
 ### ReplicaSets
 
-即便我们可以通过 ReplicationController 来管理 Pod，但这种资源逐渐过时。官方推荐我们用 ReplicaSet 代替 ReplicationController。这两种资源非常相似，唯一不同的就是 ReplicaSet 的 Pod Selector 可以更复杂。我们可以通过下面的例子具体了解。
+即便我们可以通过 ReplicationController 来管理 Pod，但这种资源逐渐过时。官方推荐我们用 ReplicaSet 代替 ReplicationController。这两种资源非常相似，唯一不同的就是 ReplicaSet 的 Pod Selector 可以更复杂，它可以只根据 label 的 key 值选择 Pod。我们可以通过下面的例子具体了解。
 
 在一般使用过程中我们并不手动创建 ReplicaSet，而是由 Deployment 资源来自动管理它。当然这里我们手动创建一个。
 
 ```yml
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta2    # ReplicaSet属于v1beta2版本(不是v1)
 kind: ReplicaSet
 metadata:
   name: kubia
 spec:
   replicas: 3
   selector:
-    matchLabels:
+    matchLabels:    # 使用matchLabels选择符
       app: kubia
   template:
     metadata:
@@ -61,13 +61,15 @@ operator 如下。
 
 ### DaemonSets
 
-ReplicationController 和 ReplicaSet 都负责运行部署在 Kubernetes 中任意 Node 的若干个 Pod。但在某种情况下，我们需要在集群的每个 Node 上只运行一个这种类型的 Pod，比如在每个 Node 上运行一个 log collector 和 resource monitor，或者我们第一篇文章中说到的kube-proxy 进程是要在每个 Node 上运行来保障 Service 工作的。
+ReplicationController 和 ReplicaSet 都负责运行部署在 Kubernetes 中任意 Node 的若干个 Pod。但在某种情况下，我们需要在集群的每个 Node 上只运行一个这种类型的 Pod，比如在每个 Node 上运行一个 log collector 和 resource monitor，或者我们第一篇文章中说到的 kube-proxy 进程是要在每个 Node 上运行来保障 Service 工作的。
 
-这时我们可以创建一个 DaemonSets 来实现，它与 ReplicaSet 很相似，除了创建的 Pod 已经有了 target Node 而不会被 Scheduler 再调度。他们的区别如下图所示。
+这时我们可以创建一个 DaemonSets 来实现，它与 ReplicaSet 很相似，但不同的是它在每个 Node 上都只部署一个 Pod。区别如下图所示。
 
 ![img](/img/post/post_daemonset.png)
 
 除了在每个 Node 上运行某个 Pod，DaemonSets 也可以指定 Pod 在某些 Node 上运行，比如我们有时需要在配有 ssd 的 Node 上执行任务。这个可以通过 nodeSelector 实现。
+
+![img](/img/post/post_ssd_monitor.png)
 
 ```yml
 apiVersion: apps/v1beta2
@@ -83,20 +85,57 @@ spec:
       labels:
         app: ssd-monitor
     spec:
-      nodeSelector:
+      nodeSelector:   # Pod Template包括node selector，以选择特定的node
         disk: ssd
       containers:
       - name: main
         image: luksa/ssd-monitor
 ```
 
-假设配有 ssd 的 Node 已经带有 app: ssd-monitor 的label，那么我们从上面的描述文件创建 DaemonSets 之后就可以实现如下效果。
+通过 *kubectl crate* 命令创建 DaemonSet。
 
-![img](/img/post/post_ssd_monitor.png)
+```
+$ kubectl create -f ssd-monitor-daemonset.yaml
+daemonset "ssd-monitor" created
+```
+
+给集群中的节点添加 label。
+
+```
+$ kubectl label node minikube disk=ssd
+node "minikube" labeled
+```
+
+查看 Pod 状态。
+
+```
+$ kubectl get po
+NAME                READY     STATUS    RESTARTS   AGE
+ssd-monitor-hgxwq   1/1       Running   0          35s
+```
+
+此时我们再把节点的label修改了。
+
+```
+$ kubectl label node minikube disk=hdd --overwrite
+node "minikube" labeled
+```
+
+就会看到创建的 Pod 正在被销毁。
+
+```
+$ kubectl get po
+NAME                READY     STATUS        RESTARTS   AGE
+ssd-monitor-hgxwq   1/1       Terminating   0          4m
+```
 
 ### Job
 
-如果我们只需要运行一个可以正常结束的应用，我们可以创建一个 Job。如下面的描述文件所示。注意 restartPolicy 设置为 OnFailure，默认为 Always。
+上面我们考虑的都是持续运行的 Pod。如果我们只需要运行一个可以正常结束的应用，我们可以通过创建一个 Job来实现，它允许运行一个进程正常结束后不会再重启容器的 Pod。在节点故障时，Job 管理的 Pod 会被重新调度到其他节点；在进程自身故障（例如进程返回error exit code）时，Job会被配置是否自动重启容器。
+
+![img](/img/post/post_job.png)
+
+Job 的定义如下面的描述文件所示。注意 restartPolicy 设置为 OnFailure，表示正常结束后不再重新启动，否则默认为 Always。
 
 ```yml
 apiVersion: batch/v1
@@ -105,17 +144,18 @@ metadata:
   name: batch-job
 spec:
   template:
-    metadata:
+    metadata:   # 不用指定Pod Seletor，它会基于template的label创建
       labels:
         app: batch-job
   spec:
-    restartPolicy: OnFailure
+    restartPolicy: OnFailure    # 不能使用默认的Always
     containers:
     - name: main
-      image: luksa/batch-job
+      image: luksa/batch-job    # 这个镜像会运行120秒然后停止
 ```
+Job 管理的 Pod 执行结束后不会自动删除，因为要方便用户查看 log。
 
-如果要多次运行 Job，可以在 spec.completions 属性设置次数。
+Job 也可以设置多次运行，可以在 spec.completions 属性设置次数。
 
 ```yml
 apiVersion: batch/v1
@@ -123,7 +163,7 @@ kind: Job
 metadata:
   name: multi-completion-batch-job
 spec:
-  completions: 5
+  completions: 5    # 运行5次
   template:
   <same as above>
 ```
@@ -137,22 +177,22 @@ metadata:
   name: multi-completion-batch-job
 spec:
   completions: 5
-  parallelism: 2
+  parallelism: 2    # 最多2个Pod并行运行
   template:
   <same as above>
 ```
 
-也可以在 Job 运行过程中修改并行数目。
+也可以在 Job 运行过程中修改并行数目。如下所示，我们将并行数目增加到3，那此时就会立即新建另一个 Pod，三个 Pod 一起运行。
 
 ```
 $ kubectl scale job multi-completion-batch-job --replicas 3
 ```
 
-最后，我们可以通过 **spec.activeDeadlineSeconds** 属性限制一个 Pod 完成 Job 的时间。如果在设定时间内完成，则正常完成结束。否则，系统会终止 Pod 并把任务标记为失败。
+最后，我们可以通过 **spec.activeDeadlineSeconds** 属性限制一个 Pod 完成 Job 的时间。如果在设定时间内完成，则正常完成结束。否则，系统会终止 Pod 并把任务标记为失败。在这里，也可以通过 spec.backoffLimit 属性配置在被标记为失败之前 Pod 可以尝试多少次，默认为6次。
 
 ### CronJob
 
-当我们需要运行周期性的任务时，我们可以创建 CronJob 资源。
+当创建 Job 资源后，Job 会立即创建运行 Pod。许多任务也需要在将来的特定时间运行或特定间隔内周期运行。当我们需要运行周期性的任务时，我们可以创建 CronJob 资源。
 
 ```yml
 apiVersion: batch/v1beta1
@@ -161,7 +201,7 @@ metadata:
   name: batch-job-every-fifteen-minutes
 spec:
   schedule: "0,15,30,45 * * * *"
-  jobTemplate:
+  jobTemplate:    # CronJob定时的创建这个job
     spec:
       template:
         metadata:
@@ -194,5 +234,5 @@ spec:
 本篇我们介绍了其他的集中管理 Pod 的资源，主要有 ReplicaSet, DaemonSet, Job, CronJob，不同的资源对应于不同的需求和应用场景。
 
 参考自：
-1. Kuberneter in Action by Marko Luksa.
+1. 《Kuberneter in Action》 by Marko Luksa.
 
