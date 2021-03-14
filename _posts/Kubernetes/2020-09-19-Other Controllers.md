@@ -214,7 +214,7 @@ spec:
             image: luksa/batch-job
 ```
 
-上面的描述文件中 spec.schedule 属性指定每隔15分钟运行一次任务，这里用到了定时表达式，如果不熟悉可以参考这篇文章。
+上面的描述文件中 spec.schedule 属性指定每隔15分钟运行一次任务，这里用到了定时表达式，如果不熟悉可以Goole简单学习。
 
 事实上，CronJob 是大概在指定的周期时间创建 Job，然后 Job 创建 Pod，所以 Job 和 Pod 的创建可能稍微迟一些，这种情况下可以通过 startingDeadlineSeconds 属性指定一个 deadline。
 
