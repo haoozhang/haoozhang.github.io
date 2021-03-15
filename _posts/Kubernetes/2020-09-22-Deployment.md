@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Chapter 8. Deployments
+title:      Chapter 12. Deployments
 subtitle:   updating applications declaratively
 date:       2020-09-22
 author:     Hao

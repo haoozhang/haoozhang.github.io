@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Chapter 11. ConfigMaps&Secrets
+title:      Chapter 10. ConfigMaps&Secrets
 subtitle:   configuring applications
 date:       2020-10-07
 author:     Hao
