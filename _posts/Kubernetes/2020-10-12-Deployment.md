@@ -2,7 +2,7 @@
 layout:     post
 title:      Chapter 12. Deployments
 subtitle:   updating applications declaratively
-date:       2020-09-22
+date:       2020-10-12
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true

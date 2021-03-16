@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      Chapter 10. ConfigMaps&Secrets
-subtitle:   configuring applications
+title:      Chapter 11. Accessing pod metadata and other resources from applications
+subtitle:   
 date:       2020-10-07
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg

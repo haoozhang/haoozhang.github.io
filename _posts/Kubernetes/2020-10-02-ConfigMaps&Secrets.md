@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      Chapter 9. Volumes
-subtitle:   attaching disk storage to containers
+title:      Chapter 10. ConfigMaps&Secrets
+subtitle:   configuring applications
 date:       2020-10-02
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
@@ -10,6 +10,7 @@ mathjax: true
 tags:
     - Kubernetes
 ---
+
 
 ### CronJob
 
