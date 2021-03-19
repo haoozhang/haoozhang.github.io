@@ -762,6 +762,18 @@ spec:
     name: main
 ```
 
+### 总结
+
+本篇章我们介绍了如何给容器传递配置数据。
+
++ 在 Pod 的描述文件中覆盖容器景象定义的默认命令；
++ 传递命令行参数给容器进程；
++ 为容器进程设置环境变量；
++ ConfigMap存储配置数据，以解耦配置数据和 Pod 描述文件；\
+  短配置数据可以用命令行参数和环境变量形式暴露；长配置数据可以用文件挂载形式暴露；
++ Secret 存储敏感数据，以文件挂载形式安全地传递给容器；
++ 创建 *docker-registry* Secret 来 pull private image；
+
 参考自：
 1. 《Kuberneter in Action》 by Marko Luksa.
 
