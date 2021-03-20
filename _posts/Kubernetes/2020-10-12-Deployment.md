@@ -252,7 +252,7 @@ deployment "kubia" rolled back
 + 通过修改 Deployment 描述文件的 Pod Template 做滚动更新；
 + 回退 Deployment 到前一个版本，或者版本历史中的任意一个版本；
 + 暂停 Deployment 来检查新部署的 Pod 是否正常工作；
-+ 通过 * maxSurge* 和 *maxUnavailable* 控制更新的速度；
++ 通过 *maxSurge* 和 *maxUnavailable* 控制更新的速度；
 + 使用 *minReadySeconds* 和 Readiness Probe 让部署到 bug 版本时自动阻塞；
 
 参考自：
