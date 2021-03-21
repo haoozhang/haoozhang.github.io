@@ -279,17 +279,132 @@ spec:
 之前介绍 service 时我们学习到，这是 ClusterIP Service，不是 NodePort和 LoadBalancer。所以只能从内部访问。但现在，我们可以用下面的 URL 通过 API Server 代理访问。
 
 ```bash
-$ curl localhost:8001/api/v1/namespaces/default/services/kubia-  ̄ public/proxy/
+$ curl localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
 You've hit kubia-1
 Data stored on this pod: No data posted yet
 ```
 
 ### Discovering peers in a StatefulSet
 
+之前我们举例子，集群应用要发现集群中的其他成员，也即 peer discovery。当然，我们可以通过访问 K8s API Server 来获取，但是 K8s 本身应该与应用程序无关。所以这不是一种理想的方法。我们可以通过 DNS 完成。
 
+#### Implementing peer discovery through DNS
+
+有一种名为 SRV 的 DNS 类型，它主要是指向一个提供特定服务 server 的 hostname 和 Port。K8s 创建了 SRV 记录，用来指向 headless Service 背后的 Pod。我们可以查看 stateful Pod 的 SRV 记录。
+
+```
+$ kubectl run -it srvlookup --image=tutum/dnsutils --rm --restart=Never -- dig SRV kubia.default.svc.cluster.local
+```
+
+上面的命令运行一个名为 srvlookup 的一次性 Pod（*--restart=Never*），它一旦 terminate 就被删除（*--rm*），用来执行 *dig SRV kubia.default.svc.cluster.local* 命令。这个命令会展示出当前系统下指向 headless Service 背后 Pod 的两条 SRV 记录。所以我们可以用这个命令来 discover peer。
+
+```
+....
+kubia-0.kubia.default.svc.cluster.local. 30 IN A 172.17.0.4 
+kubia-1.kubia.default.svc.cluster.local. 30 IN A 172.17.0.6
+....
+```
+
+下图展示了当应用接收到一个 GET 请求的运行流程。先执行 SRV 查询，然后向查到的每个 Pod 发送 GET 请求，然后返回所有存储的数据。我们使用作者已经打包好的 *kubia-pet-peers-image* 镜像。
+
+![img](/img/post/StatefulSet/post_srv.png)
+
+#### Updating a StatefulSet
+
+现在我们更新创建的 StatefulSet，把 Replicas Count 改为 3，并把镜像改为 *luksa/kubia-pet-peers*。通过查看 Pod，我们可以看到新创建了一个 Pod。
+
+```
+$ kubectl get po
+NAME      READY     STATUS              RESTARTS   AGE
+kubia-0   1/1       Running             0          20m
+kubia-1   1/1       Running             0          20m
+kubia-2   0/1       ContainerCreating   0          3s
+```
+
+新创建的 Pod 运行新镜像。但在 K8s 1.7版本之前，不会像 Deployment 一样自动检测到镜像变化并 rolling update。所以我们要手动删除前两个 Pod 让它重建。1.7之后，StatefulSet 可以自动检测变化并执行 rolling update。
+
+#### 测试
+
+我们先向 POST 几条数据。
+
+```
+$ curl -X POST -d "The sun is shining" localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/ 
+Data stored on pod kubia-1
+$ curl -X POST -d "The weather is sweet" localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/ 
+Data stored on pod kubia-0
+```
+
+然后我们读取数据。可以看到通过正常的 Service 访问 hit 到 kubia-2 Pod，拿到了所有数据。
+
+```
+$ curl localhost:8001/api/v1/namespaces/default/services/kubia-public/proxy/
+You've hit kubia-2
+Data stored on each cluster node:
+- kubia-0.kubia.default.svc.cluster.local: The weather is sweet 
+- kubia-1.kubia.default.svc.cluster.local: The sun is shining
+- kubia-2.kubia.default.svc.cluster.local: No data posted yet
+```
+
+### StatefulSets 如何处理 Node failure
+
+在之前 "理解 StatefulSet 含义" 一节，我们说到 K8s 必须保证不能同时出现两个相同标识和存储的 Pod 运行在集群中，也即 at-most-one。这一节我们看看当一个 Node 断连时 StatefulSet 如何处理。
+
+#### Node 从网络中断连
+
+我们通过关闭 Node 的 *eth0* 网络接口模拟 Node 断连。
+
+```
+$ sudo ifconfig eth0 down
+```
+
+当断连之后，运行在 Node 上的 Kubelet 就不能连到 K8s Master Node，control panel 就无法得知 Node 和 Pod 的运行状态。一会儿之后，control panel 就把 Node 标记为 notReady，把运行在该 Node 上的 Pod 标记为 unknown。当 Pod 在几分钟内仍然 unknown，那 control panel 就自动删除 Pod 资源来驱逐该 Pod。如果 Kubelet 能看到，那它就会终止 Node 上的 Pod。但此时因为我们已经断连，Kubelet 看不到 control panel 的状态。
+
+#### Deleting the pod manually
+
+为了能继续运行三个正常的 Pod，我们手动删除 Pod。
+
+```
+$ kubectl delete po kubia-0
+pod "kubia-0" deleted
+```
+
+但我们查看会发现，Pod 仍然存在。
+
+```
+$ kubectl get po
+NAME      READY     STATUS    RESTARTS   AGE
+kubia-0   1/1       Unknown   0          15m       
+kubia-1   1/1       Running   0          14m 
+kubia-2   1/1       Running   0          13m
+```
+
+这是因为，在我们删除之前，control panel 已经把它标记为 deletion，一旦等到 Kubelet 通知它 Pod container 被终止，它就会删除。但在我们的情况下，因为 Node 断连，Kubelet 永远不会通知到。所以我们手动强制删除，这里要用到 *--force* 和 *--grace-period 0* 两个参数。
+
+```
+$ kubectl delete po kubia-0 --force --grace-period 0
+```
+
+再次查看 Pod，会发现已经重新创建。
+
+```
+$ kubectl get po
+NAME      READY     STATUS              RESTARTS   AGE
+kubia-0   1/1       ContainerCreating   0          15s      
+kubia-1   1/1       Running             0          14m 
+kubia-2   1/1       Running             0          13m
+```
 
 ### 总结
 
+这一章我们学习了使用 StatefulSet 部署 stateful apps。
+
++ 复制的 Pod 分配独立的存储；
++ 为 Pod 提供稳定的标识；
++ 创建 StatefulSet 和对应的 headless governing Service；
++ scale and update StatefulSet；
++ 通过 DNS 发现集群成员；
++ 强制删除 stateful Pod；
+
 参考自：
-1. Kuberneter in Action by Marko Luksa.
+1. 《Kuberneter in Action》 by Marko Luksa.
 
