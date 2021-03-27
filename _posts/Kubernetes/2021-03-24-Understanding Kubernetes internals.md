@@ -145,6 +145,18 @@ $ kubectl get pods --watch
 
 ### What the Kubelet does
 
+Kubelet 负责运行在 Worker Node 的一切东西。首先，它在 API Server 上创建一个 Node 资源来注册这个 Node，然后它需要持续监听 API Server，当有 Pod 被调度到这个 Node 上时，它就通过 container runtime 来启动 Pod 的容器。之后继续监听运行的容器，并向 API Server 报告容器状态。
+
+Kubelet 同时负责运行容器的 Liveness Probe，当探查失败时会重启容器。最后，当 Pod 被 API Server 删除时，Kubelet 终止运行的容器。
+
+除了从 API Server 拿到 Pod 的描述文件，Kubelet 也可以运行指定本地目录下的 Pod 描述文件，这主要是用来将 Control Plane 的容器版本运行为 Pod。之前我们说过，Control Plane 要么直接部署在系统中，要么以 Pod 方式运行。因此，可以讲 K8s 系统组件的 Pod 描述放在 Kubelet 的 manifest 目录让它运行和管理，如下图所示。
+
+![img](/img/post/K8sInternal/post_11.6.png)
+
+### The role of the Kubernetes Service Proxy
+
+除了 Kubelet，每个 Worker Node 也运行一个 Kube-proxy，它用于确保 client 访问到 Service 的连接最后到达 Service 背后的某一个 Pod，当 Service 代理多个 Pod 时，会在这些 Pod 之间做负载均衡。
+
 
 
 参考自：
