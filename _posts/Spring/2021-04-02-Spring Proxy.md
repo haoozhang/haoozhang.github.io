@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Spring Proxy
+title:      6. Spring Proxy
 subtitle:   
 date:       2021-04-02
 author:     Hao

@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Spring with Mybatis
+title:      8. Spring with Mybatis
 subtitle:   
 date:       2021-04-04
 author:     Hao
