@@ -394,4 +394,4 @@ public class Test {
 本篇我们学习了代理模式，了解了静态代理和动态代理，这是 Spring AOP 的基础，下一篇我们学习 AOP。
 
 参考自：
-1. [狂神说Spring05：使用注解开发](https://mp.weixin.qq.com/s/dCeQwaQ-A97FiUxs7INlHw)
+1. [狂神说Spring06：静态/动态代理模式](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247484130&idx=1&sn=73741a404f7736c02bcdf69f565fe094&scene=19#wechat_redirect)
