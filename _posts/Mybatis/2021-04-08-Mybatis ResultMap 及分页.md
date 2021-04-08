@@ -292,3 +292,7 @@ public void testUserByRowBounds() {
 }
 ```
 
+参考自：
+1. [Mybatis Docs](https://mybatis.org/mybatis-3/zh/configuration.html)
+
+2. [狂神说MyBatis03：ResultMap及分页](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247484043&idx=1&sn=94dbbcbca7ae17c50aa66fd78c8ecaa3&scene=19#wechat_redirect)
