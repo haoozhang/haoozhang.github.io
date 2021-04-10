@@ -258,7 +258,7 @@ public class UserDaoImpl implements UserDao {
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 ```
 2、在Spring配置文件中配置数据源替换Mybaits的数据源
-```
+```xml
 <!--配置数据源：数据源有非常多，可以使用第三方的，也可使使用Spring的-->
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
