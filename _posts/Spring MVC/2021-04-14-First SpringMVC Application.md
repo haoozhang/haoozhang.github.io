@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      1. First SpringMVC Application
+title:      2. First SpringMVC Application
 subtitle:   
 date:       2021-04-14
 author:     Hao
@@ -15,7 +15,7 @@ tags:
 
 ## Hello SpringMVC
 
-1、1、新建 Maven 工程，并引入以下依赖
+1、新建 Maven 工程，并引入以下依赖
 
 ```xml
 <dependencies>
@@ -114,7 +114,7 @@ tags:
    <property name="prefix" value="/WEB-INF/jsp/"/>
    <!--后缀-->
    <property name="suffix" value=".jsp"/>
-</bean>
+</bean> 
 ```
 
 8、编写业务逻辑 **Controller**，要么实现 Controller 接口，要么增加注解；覆盖的方法需要返回一个ModelAndView，其中添加数据，封装视图
