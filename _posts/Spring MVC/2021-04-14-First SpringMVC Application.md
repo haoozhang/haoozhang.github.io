@@ -47,6 +47,8 @@ tags:
 </dependencies>
 ```
 
+确保上述依赖在项目的打包文件中，如果没有，在 Project Structure 中的 Artifacts 中，添加一个 lib 文件夹，包含以上依赖
+
 2、右键工程 Add Framework Support，添加 Web App 的支持
 
 3、配置 web.xml 文件，注册 **DispatcherServlet**
@@ -160,7 +162,7 @@ ${msg}
 
 可能遇到的问题：访问出现404，排查步骤：
 1. 查看控制台输出，看一下是不是缺少了什么jar包。
-2. 如果jar包存在，显示无法输出，就在IDEA的项目发布中，添加lib依赖！
+2. 如果jar包存在，显示无法输出，就在 IDEA 的 Project Structute 项目发布中，添加 lib 依赖！
 3. 重启Tomcat 即可解决！
 
 ## 改用注解实现
