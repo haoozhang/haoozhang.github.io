@@ -2,7 +2,7 @@
 layout:     post
 title:      3. Controller & RestFul
 subtitle:   
-date:       2021-04-14
+date:       2021-04-15
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
@@ -205,5 +205,4 @@ public String index2(Model model){
 本篇我们在第一个 SpringMVC 程序的基础上，了解了 Controller 的用法，顺便了解了 RestFul 风格。
 
 参考自：
-1. [狂神说SpringMVC03：RestFul和控制器
-秦](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483993&idx=1&sn=abdd687e0f360107be0208946a7afc1d&scene=19#wechat_redirect)
+1. [狂神说SpringMVC03：RestFul和控制器](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483993&idx=1&sn=abdd687e0f360107be0208946a7afc1d&scene=19#wechat_redirect)
