@@ -13,13 +13,15 @@ tags:
 
 ## What is Mybatis
 
-MyBatis 是一款优秀的 **持久层** 框架，它支持自定义 SQL、存储过程以及高级映射。\
-MyBatis 免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作。\
-MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 POJO 类为数据库中的记录。
+一款优秀的 **持久层** 框架，它支持自定义 SQL、存储过程以及高级映射。\
+**简化 JDBC**：免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作。\
+可通过简单的 **XML或注解** 来配置和映射原始类型、接口和 POJO 类为数据库中的记录。
 
 ## Mybatis 第一个程序
 
 ### 搭建实验数据库
+
+建库建表，创建一个简单的 user 表
 
 ```sql
 CREATE DATABASE `mybatis`;
@@ -35,77 +37,97 @@ CREATE TABLE `user` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert  into `user`(`id`,`name`,`pwd`) values 
-(1,'狂神','123456'),
-(2,'张三','abcdef'),
-(3,'李四','987654');
+insert into `user`(`id`,`name`,`pwd`) values 
+(1,'张三','123456'),
+(2,'李四','abcdef'),
+(3,'王五','987654');
 ```
 
 ### 导入 Mybatis 相关 jar 包
 
-```xml
-<dependency>
-   <groupId>org.mybatis</groupId>
-   <artifactId>mybatis</artifactId>
-   <version>3.5.2</version>
-</dependency>
+除了 mybatis jar 包外，还需要连接数据库的包，以及 junit 测试包
 
-<dependency>
-   <groupId>mysql</groupId>
-   <artifactId>mysql-connector-java</artifactId>
-   <version>5.1.47</version>
-</dependency>
+```xml
+<dependencies>
+
+    <!-- Mybatis -->
+    <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>3.5.2</version>
+    </dependency>
+
+    <!-- MySQL 数据库连接 -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.23</version>
+    </dependency>
+
+    <!-- Junit -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
 ```
 
-### 编写 Mybatis 核心配置文件
+### 编写 Mybatis 核心配置文件 mybatis-config.xml
+
+该文件包括 Mybatis 的所有配置，这里我们先配置一下数据源，以及之后要注册绑定 Mapper.xml 文件
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
-  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-  <environments default="development">
-    <environment id="development">
-      <transactionManager type="JDBC"/>
-      <dataSource type="POOLED">
-        <property name="driver" value="${driver}"/>
-        <property name="url" value="${url}"/>
-        <property name="username" value="${username}"/>
-        <property name="password" value="${password}"/>
-      </dataSource>
-    </environment>
-  </environments>
-  <mappers>
-       <mapper resource="com/kuang/dao/userMapper.xml"/>
-  </mappers>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="12345678"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="com/zhao/mapper/UserMapper.xml"/>
+    </mappers>
+
 </configuration>
 ```
 
-4、编写 Mybatis 工具类
+### 编写 Mybatis 工具类
 
 ```java
 public class MybatisUtils {
- 
-    private static SqlSessionFactory  sqlSessionFactory;
- 
+
+    private static SqlSessionFactory sqlSessionFactory;
+
     static {
         try {
             // 核心配置文件路径
             String resource = "mybatis-config.xml";
-            InputStream inputStream = Resources. getResourceAsStream(resource);
+            InputStream inputStream = Resources.getResourceAsStream(resource);
             // 创建 SqlSessionFactory 实例
-            sqlSessionFactory = new  SqlSessionFactoryBuilder().build (inputStream);
-       } catch (IOException e) {
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build (inputStream);
+        } catch (IOException e) {
             e.printStackTrace();
-       }
+        }
     }
- 
-    //获取 SqlSession 连接
+
+    // 获取 SqlSession 连接
     public static SqlSession getSession(){
         return sqlSessionFactory.openSession();
     }
- 
 }
 ```
 
@@ -114,24 +136,23 @@ public class MybatisUtils {
 ```java
 public class User {
    
-   private int id;  //id
-   private String name;   //姓名
-   private String pwd;   //密码
-   
-   //构造,有参,无参
-   //set/get
-   //toString()
+   private int id; 
+   private String name;   
+   private String pwd; 
+
+   // 构造函数：有参，无参
+   // set/get
+   // toString()
 }
 ```
 
 ### 编写 Mapper 接口类
 
 ```java
-import com.kuang.pojo.User;
-import java.util.List;
-
 public interface UserMapper {
-   List<User> selectUser();
+
+    List<User> selectAllUsers();
+
 }
 ```
 
@@ -143,12 +164,14 @@ Namespace 不要写错，要准确对应 Mapper 接口的完整包名
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kuang.dao.UserMapper">
- <select id="selectUser" resultType="com.kuang.pojo.User">
-  select * from user
- </select>
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhao.mapper.UserMapper">
+
+    <select id="selectAllUsers" resultType="com.zhao.pojo.User">
+        select * from mybatis.user
+    </select>
+
 </mapper>
 ```
 
@@ -156,46 +179,46 @@ Namespace 不要写错，要准确对应 Mapper 接口的完整包名
 
 ```java
 public class MyTest {
+
     @Test
-    public void selectUser() {
-        SqlSession session = MybatisUtils. getSession();
-        //方法一: 不推荐使用
-        //List<User> users = session.selectList ("com.kuang.mapper.UserMapper.selectUser");
-        //方法二:
-        UserMapper mapper = session.getMapper (UserMapper.class);
-        List<User> users = mapper.selectUser();
- 
-        for (User user: users){
+    public void testSelectAllUsers() {
+        SqlSession session = MybatisUtils.getSession();
+        UserMapper mapper = session.getMapper(UserMapper.class);
+        List<User> userList = mapper.selectAllUsers();
+        for (User user : userList) {
             System.out.println(user);
         }
-        session.close();
     }
 }
 ```
 
 ### 可能遇到的问题
 
-由于 Mapper.xml 配置文件在 src/main 目录下，可能会出现 Maven 打包时过滤静态资源的问题。
+由于 Mapper.xml 配置文件在 src/main 目录下，可能会出现 Maven 打包时过滤静态资源的问题。错误信息为
+
+![img](/img/post/Mybatis/not_found_UserMapper.png)
 
 ```xml
-<resources>
-   <resource>
-       <directory>src/main/java</directory>
-       <includes>
-           <include>**/*.properties</include>
-           <include>**/*.xml</include>
-       </includes>
-       <filtering>false</filtering>
-   </resource>
-   <resource>
-       <directory>src/main/resources</directory>
-       <includes>
-           <include>**/*.properties</include>
-           <include>**/*.xml</include>
-       </includes>
-       <filtering>false</filtering>
-   </resource>
-</resources>
+<build>
+    <resources>
+       <resource>
+           <directory>src/main/java</directory>
+           <includes>
+               <include>**/*.properties</include>
+               <include>**/*.xml</include>
+           </includes>
+           <filtering>false</filtering>
+       </resource>
+       <resource>
+           <directory>src/main/resources</directory>
+           <includes>
+               <include>**/*.properties</include>
+               <include>**/*.xml</include>
+           </includes>
+           <filtering>false</filtering>
+       </resource>
+    </resources>
+</build>
 ```
 
 ## 总结
