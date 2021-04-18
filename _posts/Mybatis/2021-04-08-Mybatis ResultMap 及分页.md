@@ -61,7 +61,7 @@ public void testSelectUserById() {
 }
 ```
 
-结果显示为：User{id=1, name='狂神', password='null'}，password 为空
+结果显示为：User{id=1, name='张三', password='null'}，password 为空
 
 分析：上述的 select 语句可以理解为 
 

@@ -20,18 +20,20 @@ tags:
 
 ```java
 public interface UserMapper {
-   //查询全部用户
-   List<User> selectUser();
-   //根据id查询用户
-   User selectUserById(int id);
+
+    // 查询所有用户
+    List<User> selectAllUsers();
+
+    // 根据 id 查询用户
+    User selectUserById(int id);
 }
 ```
 
 2、在UserMapper.xml中添加Select语句
 
 ```xml
-<select id="selectUserById" resultType="com.kuang.pojo.User">
-select * from user where id = #{id}
+<select id="selectUserById" resultType="com.zhao.pojo.User">
+   select * from user where id = #{id}
 </select>
 ```
 
@@ -39,12 +41,12 @@ select * from user where id = #{id}
 
 ```java
 @Test
-public void tsetSelectUserById() {
-   SqlSession session = MybatisUtils.getSession();  //获取SqlSession连接
-   UserMapper mapper = session.getMapper(UserMapper.class);
-   User user = mapper.selectUserById(1);
-   System.out.println(user);
-   session.close();
+public void testSelectUserById() {
+    SqlSession session = MybatisUtils.getSession();
+    UserMapper mapper = session.getMapper(UserMapper.class);
+    User user = mapper.selectUserById(1);
+    System.out.println(user);
+    session.close();
 }
 ```
 
@@ -58,13 +60,11 @@ public void tsetSelectUserById() {
 
 ```java
 //通过密码和名字查询用户
-User selectUserByNP(@Param("username") String username,@Param("pwd") String pwd);
+User selectUserByNP(@Param("name2") String name1, @Param("pwd2") String pwd1);
 
-/*
-   <select id="selectUserByNP" resultType="com.kuang.pojo.User">
-     select * from user where name = #{username} and pwd = #{pwd}
-   </select>
-*/
+<select id="selectUserByNP" resultType="com.zhao.pojo.User">
+   select * from mybatis.user where name = #{name2} and pwd = #{pwd2}
+</select>
 ```
 
 思路二：使用万能的Map
@@ -72,18 +72,18 @@ User selectUserByNP(@Param("username") String username,@Param("pwd") String pwd)
 1、在接口方法中，参数直接传递Map；
 
 ```java
-User selectUserByNP2(Map<String,Object> map);
+User selectUserByNP2(Map<String, Object> map);
 ```
 
 2、编写sql语句的时候，需要传递参数类型，参数类型为map
 
 ```xml
-<select id="selectUserByNP2" parameterType="map" resultType="com.kuang.pojo.User">
-select * from user where name = #{username} and pwd = #{pwd}
+<select id="selectUserByNP2" parameterType="map" resultType="com.zhao.pojo.User">
+   select * from mybatis.user where name = #{name2} and pwd = #{pwd2}
 </select>
 ```
 
-3、在使用方法的时候，Map的 key 为 sql中取的值即可，没有顺序要求！
+3、在使用方法的时候，Map的 key 为 sql 中取的值即可，没有顺序要求！
 
 ```java
 Map<String, Object> map = new HashMap<String, Object>();
@@ -108,7 +108,7 @@ int addUser(User user);
 2、在UserMapper.xml中添加insert语句
 
 ```xml
-<insert id="addUser" parameterType="com.kuang.pojo.User">
+<insert id="addUser" parameterType="com.zhao.pojo.User">
     insert into user (id,name,pwd) values (#{id},#{name},#{pwd})
 </insert>
 ```
@@ -141,7 +141,7 @@ int updateUser(User user);
 ```
 2、编写对应的配置文件SQL
 ```xml
-<update id="updateUser" parameterType="com.kuang.pojo.User">
+<update id="updateUser" parameterType="com.zhao.pojo.User">
   update user set name=#{name},pwd=#{pwd} where id = #{id}
 </update>
 ```
@@ -295,7 +295,7 @@ password=123456
 
 ```xml
 <typeAliases>
-   <typeAlias type="com.kuang.pojo.User" alias="User"/>
+   <typeAlias type="com.zhao.pojo.User" alias="User"/>
 </typeAliases>
 ```
 
@@ -304,7 +304,7 @@ password=123456
 也可以指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean，比如:
 ```xml
 <typeAliases>
-   <package name="com.kuang.pojo"/>
+   <package name="com.zhao.pojo"/>
 </typeAliases>
 ```
 每一个在包 com.kuang.pojo 中的 Java Bean，在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名。
@@ -333,7 +333,7 @@ public class User {
     <mapper class="org.mybatis.builder.UserMapper"/>
    
     <!-- 方式三: 扫描包; 需要配置文件名称和接口名相同, 并位于同一目录下 -->
-    <mapper class="org.mybatis.builder.UserMapper"/>
+    <package name="org.mybatis.builder.UserMapper"/>
 </mappers>
 ```
 

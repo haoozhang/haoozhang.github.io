@@ -70,7 +70,7 @@ public interface BlogMapper {
 <!DOCTYPE mapper
        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kuang.mapper.BlogMapper">
+<mapper namespace="com.zhao.mapper.BlogMapper">
 
 </mapper>
 ```
@@ -96,7 +96,7 @@ int addBlog(Blog blog);
 
 sql配置文件
 ```xml
-<insert id="addBlog" parameterType="blog">
+<insert id="addBlog" parameterType="Blog">
   insert into blog (id, title, author, create_time, views)
   values (#{id},#{title},#{author},#{createTime},#{views});
 </insert>
@@ -109,7 +109,7 @@ public void addInitBlog(){
    BlogMapper mapper = session.getMapper(BlogMapper.class);
 
    Blog blog = new Blog();
-   blog.setId(IDUtil.genId());
+   blog.setId(IdUtil.genId());
    blog.setTitle("Mybatis如此简单");
    blog.setAuthor("狂神说");
    blog.setCreateTime(new Date());
@@ -117,15 +117,15 @@ public void addInitBlog(){
 
    mapper.addBlog(blog);
 
-   blog.setId(IDUtil.genId());
+   blog.setId(IdUtil.genId());
    blog.setTitle("Java如此简单");
    mapper.addBlog(blog);
 
-   blog.setId(IDUtil.genId());
+   blog.setId(IdUtil.genId());
    blog.setTitle("Spring如此简单");
    mapper.addBlog(blog);
 
-   blog.setId(IDUtil.genId());
+   blog.setId(IdUtil.genId());
    blog.setTitle("微服务如此简单");
    mapper.addBlog(blog);
 
@@ -152,7 +152,7 @@ List<Blog> queryBlogIf(Map map);
 如果作者名字为空，那么只根据博客名字查询，反之，则根据作者名来查询
 select * from blog where title = #{title} and author = #{author}
 -->
-<select id="queryBlogIf" parameterType="map" resultType="blog">
+<select id="queryBlogIf" parameterType="map" resultType="Blog">
   select * from blog where
    <if test="title != null">
       title = #{title}
@@ -196,7 +196,7 @@ select * from user where and author=#{author}，
 
 修改上面的SQL语句；
 ```xml
-<select id="queryBlogIf" parameterType="map" resultType="blog">
+<select id="queryBlogIf" parameterType="map" resultType="Blog">
   select * from blog
    <where>
        <if test="title != null">
@@ -266,7 +266,7 @@ List<Blog> queryBlogChoose(Map map);
 2、sql配置文件
 
 ```xml
-<select id="queryBlogChoose" parameterType="map" resultType="blog">
+<select id="queryBlogChoose" parameterType="map" resultType="Blog">
   select * from blog
    <where>
        <choose>

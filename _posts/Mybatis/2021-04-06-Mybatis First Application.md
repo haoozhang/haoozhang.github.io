@@ -198,6 +198,8 @@ public class MyTest {
 
 ![img](/img/post/Mybatis/not_found_UserMapper.png)
 
+我们可以在 pom 文件中添加如下配置避免静态资源过滤的问题
+
 ```xml
 <build>
     <resources>
@@ -221,9 +223,11 @@ public class MyTest {
 </build>
 ```
 
+另外，使用的数据库版本和 mysql-connector jar 包版本要对应
+
 ## 总结
 
-本篇我们通过第一个程序基本了解了 Mybatis。
+本篇我们通过构建 Mybatis 第一个程序基本了解了 Mybatis 的大概。
 
 参考自：
 1. [Mybatis Docs](https://mybatis.org/mybatis-3/zh/getting-started.html)
