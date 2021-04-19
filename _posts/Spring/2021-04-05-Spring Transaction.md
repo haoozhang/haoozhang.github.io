@@ -36,7 +36,7 @@ int deleteUser(int id);
 
 mapper文件，我们故意把 deletes 写错，测试！
 ```xml
-<insert id="addUser" parameterType="com.kuang.pojo.User">
+<insert id="addUser" parameterType="com.zhao.pojo.User">
 insert into user (id,name,pwd) values (#{id},#{name},#{pwd})
 </insert>
 
@@ -47,7 +47,7 @@ deletes from user where id = #{id}
 
 编写接口的实现类，在实现类中，我们去操作一波
 ```java
-public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
+public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper {
 
    //增加一些操作
    public List<User> selectUser() {
@@ -77,7 +77,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-   UserMapper mapper = (UserMapper) context.getBean("userDao");
+   UserMapper mapper = (UserMapper) context.getBean("userMapper");
    List<User> user = mapper.selectUser();
    System.out.println(user);
 }
@@ -156,7 +156,7 @@ Spring 默认的事务传播行为是 PROPAGATION_REQUIRED，它适合于绝大�
 ```xml
 <!--配置aop织入事务-->
 <aop:config>
-   <aop:pointcut id="txPointcut" expression="execution(* com.kuang.dao.*.*(..))"/>
+   <aop:pointcut id="txPointcut" expression="execution(* com.zhao.mapper.*.*(..))"/>
    <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
 </aop:config>
 ```
@@ -168,7 +168,7 @@ Spring 默认的事务传播行为是 PROPAGATION_REQUIRED，它适合于绝大�
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-   UserMapper mapper = (UserMapper) context.getBean("userDao");
+   UserMapper mapper = (UserMapper) context.getBean("userMapper");
    List<User> user = mapper.selectUser();
    System.out.println(user);
 }

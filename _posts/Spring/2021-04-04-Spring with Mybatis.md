@@ -124,7 +124,7 @@ public class User {
 <configuration>
 
    <typeAliases>
-       <package name="com.kuang.pojo"/>
+       <package name="com.zhao.pojo"/>
    </typeAliases>
 
    <environments default="development">
@@ -140,7 +140,7 @@ public class User {
    </environments>
 
    <mappers>
-       <package name="com.kuang.dao"/>
+       <package name="com.zhao.Mapper"/>
    </mappers>
 </configuration>
 ```
@@ -157,7 +157,7 @@ public interface UserMapper {
 <!DOCTYPE mapper
        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kuang.dao.UserMapper">
+<mapper namespace="com.zhao.Mapper.UserMapper">
 
    <select id="selectUser" resultType="User">
         select * from user
@@ -233,9 +233,9 @@ SqlSessionTemplate 是 MyBatis-Spring 的核心。作为 SqlSession 的一个实
 </bean>
 ```
 
-现在，这个 bean 就可以直接注入到你的 DAO bean 中了。你需要在你的 bean 中添加一个 SqlSession 属性，就像下面这样：
+现在，这个 bean 就可以直接注入到你的 Mapper bean 中了。你需要在你的 bean 中添加一个 SqlSession 属性，就像下面这样：
 ```java
-public class UserDaoImpl implements UserDao {
+public class UserMapperImpl implements UserMapper {
 
     private SqlSession sqlSession;
 
@@ -250,7 +250,7 @@ public class UserDaoImpl implements UserDao {
 ```
 按下面这样，在 Spring 的配置文件中注入 SqlSessionTemplate：
 ```xml
-<bean id="userDao" class="org.mybatis.spring.sample.dao.UserDaoImpl">
+<bean id="userMapper" class="org.mybatis.spring.sample.Mapper.UserMapperImpl">
     <property name="sqlSession" ref="sqlSession" />
 </bean>
 ```
@@ -283,7 +283,7 @@ public class UserDaoImpl implements UserDao {
    <!--关联 Mybatis-->
    <property name="configLocation" value="classpath:mybatis-config.xml"/>
    <!--绑定注册 Mapper 接口-->
-   <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
+   <property name="mapperLocations" value="classpath:com/zhao/Mapper/*.xml"/>
 </bean>
 ```
 
@@ -295,9 +295,9 @@ public class UserDaoImpl implements UserDao {
    <constructor-arg index="0" ref="sqlSessionFactory"/>
 </bean>
 ```
-5、增加Dao接口的实现类；私有化sqlSessionTemplate
+5、增加Mapper接口的实现类；私有化sqlSessionTemplate
 ```java
-public class UserDaoImpl implements UserMapper {
+public class UserMapperImpl implements UserMapper {
 
    //sqlSession不用我们自己创建了，Spring来管理
    private SqlSessionTemplate sqlSession;
@@ -315,7 +315,7 @@ public class UserDaoImpl implements UserMapper {
 ```
 6、注册bean实现
 ```xml
-<bean id="userDao" class="com.kuang.dao.UserDaoImpl">
+<bean id="userMapper" class="com.zhao.mapper.UserMapperImpl">
    <property name="sqlSession" ref="sqlSession"/>
 </bean>
 ```
@@ -324,7 +324,7 @@ public class UserDaoImpl implements UserMapper {
 @Test
 public void test2(){
     ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-    UserMapper mapper = (UserMapper) context.getBean("userDao");
+    UserMapper mapper = (UserMapper) context.getBean("userMapper");
     List<User> user = mapper.selectUser();
     System.out.println(user);
 }
@@ -338,7 +338,7 @@ public void test2(){
        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
    <typeAliases>
-       <package name="com.kuang.pojo"/>
+       <package name="com.zhao.pojo"/>
    </typeAliases>
 </configuration>
 ```
@@ -347,9 +347,9 @@ public void test2(){
 
 mybatis-spring1.2.3版以上提供了 SqlSessionSupport 类。该类通过注入 SqlSessionFactory，可以直接通过 getSqlSession() 获得 SqlSession，绕过SqlSessionTemplate。
 
-1、修改 UserDaoImpl
+1、修改 UserMapperImpl
 ```java
-public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
+public class UserMapperImpl extends SqlSessionDaoSupport implements UserMapper {
    public List<User> selectUser() {
        UserMapper mapper = getSqlSession().getMapper(UserMapper.class);
        return mapper.selectUser();
@@ -358,7 +358,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 ```
 2、修改bean的配置，注入 SqlSessionFactory
 ```xml
-<bean id="userDao" class="com.kuang.dao.UserDaoImpl">
+<bean id="userMapper" class="com.zhao.Mapper.UserMapperImpl">
    <property name="sqlSessionFactory" ref="sqlSessionFactory" />
 </bean>
 ```
@@ -368,7 +368,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-   UserMapper mapper = (UserMapper) context.getBean("userDao");
+   UserMapper mapper = (UserMapper) context.getBean("userMapper");
    List<User> user = mapper.selectUser();
    System.out.println(user);
 }
