@@ -137,14 +137,14 @@ public class AfterLog implements AfterReturningAdvice {
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
    <!-- 注册 bean -->
-   <bean id="userService" class="com.kuang.service.UserServiceImpl"/>
-   <bean id="beforelog" class="com.kuang.log.BeforeLog"/>
-   <bean id="afterLog" class="com.kuang.log.AfterLog"/>
+   <bean id="userService" class="com.zhao.service.UserServiceImpl"/>
+   <bean id="beforelog" class="com.zhao.log.BeforeLog"/>
+   <bean id="afterLog" class="com.zhao.log.AfterLog"/>
 
    <!-- aop的配置 -->
    <aop:config>
        <!-- 切入点 expression:表达式匹配要执行的方法 -->
-       <aop:pointcut id="pointcut" expression="execution(* com.kuang.service.UserServiceImpl.*(..))"/>
+       <aop:pointcut id="pointcut" expression="execution(* com.zhao.service.UserServiceImpl.*(..))"/>
        <!--执行环绕; advice-ref执行方法，pointcut-ref切入点-->
        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>
        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>
@@ -190,13 +190,13 @@ public class DiyPointcut {
 
 ```xml
 <!--注册bean-->
-<bean id="diy" class="com.kuang.config.DiyPointcut"/>
+<bean id="diy" class="com.zhao.config.DiyPointcut"/>
 
 <!--aop的配置-->
 <aop:config>
    <!--第二种方式：使用AOP的标签实现-->
    <aop:aspect ref="diy">
-       <aop:pointcut id="diyPonitcut" expression="execution(* com.kuang.service.UserServiceImpl.*(..))"/>
+       <aop:pointcut id="diyPonitcut" expression="execution(* com.zhao.service.UserServiceImpl.*(..))"/>
        <aop:before pointcut-ref="diyPonitcut" method="before"/>
        <aop:after pointcut-ref="diyPonitcut" method="after"/>
    </aop:aspect>
@@ -224,17 +224,17 @@ public class MyTest {
 @Aspect
 public class AnnotationPointcut {
 
-   @Before("execution(* com.kuang.service.UserServiceImpl.*(..))")
+   @Before("execution(* com.zhao.service.UserServiceImpl.*(..))")
    public void before(){
        System.out.println("---------方法执行前---------");
   }
 
-   @After("execution(* com.kuang.service.UserServiceImpl.*(..))")
+   @After("execution(* com.zhao.service.UserServiceImpl.*(..))")
    public void after(){
        System.out.println("---------方法执行后---------");
   }
 
-   @Around("execution(* com.kuang.service.UserServiceImpl.*(..))")
+   @Around("execution(* com.zhao.service.UserServiceImpl.*(..))")
    public void around(ProceedingJoinPoint jp) throws Throwable {
        System.out.println("环绕前");
        System.out.println("签名:"+jp.getSignature());
@@ -249,7 +249,7 @@ public class AnnotationPointcut {
 2、配置文件中注册 bean，并增加支持注解的配置
 
 ```xml
-<bean id="annotationPointcut" class="com.kuang.config.AnnotationPointcut"/>
+<bean id="annotationPointcut" class="com.zhao.config.AnnotationPointcut"/>
 <aop:aspectj-autoproxy/>
 ```
 

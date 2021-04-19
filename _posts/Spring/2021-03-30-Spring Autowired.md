@@ -15,7 +15,7 @@ tags:
 
 自动装配 (Autowired) 是使用 Spring 满足 bean 依赖的一种方法，Spring 会在应用上下文中为某个 bean 寻找其依赖的 bean。
 
-Spring 中有三种装配 baen 的机制，分别是：
+Spring 中有三种装配 bean 的机制，分别是：
 
 + 在 XML 文件中显式配置；
 + 在 java 中显式配置；
@@ -58,7 +58,7 @@ public class Dog {
 public class User {
    private Cat cat;
    private Dog dog;
-   private String str;
+   private String name;
 }
 ```
 
@@ -70,13 +70,13 @@ public class User {
       xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <bean id="dog" class="com.kuang.pojo.Dog"/>
-   <bean id="cat" class="com.kuang.pojo.Cat"/>
+   <bean id="dog" class="com.zhao.pojo.Dog"/>
+   <bean id="cat" class="com.zhao.pojo.Cat"/>
 
-   <bean id="user" class="com.kuang.pojo.User">
+   <bean id="user" class="com.zhao.pojo.User">
        <property name="cat" ref="cat"/>
        <property name="dog" ref="dog"/>
-       <property name="str" value="qinjiang"/>
+       <property name="name" value="XiaoMing"/>
    </bean>
 </beans>
 ```
@@ -110,7 +110,7 @@ public class MyTest {
 1、修改bean配置，增加一个属性  autowire="byName"
 
 ```xml
-<bean id="user" class="com.kuang.pojo.User" autowire="byName">
+<bean id="user" class="com.zhao.pojo.User" autowire="byName">
    <property name="str" value="qinjiang"/>
 </bean>
 ```
@@ -140,15 +140,15 @@ public class MyTest {
 2、测试，正常输出
 
 3、再注册一个cat 的bean对象！
+```xml
+<bean id="dog" class="com.zhao.pojo.Dog"/>
+<bean id="cat" class="com.zhao.pojo.Cat"/>
+<bean id="cat2" class="com.zhao.pojo.Cat"/>
 
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
-
-<bean id="user" class="com.kuang.pojo.User" autowire="byType">
+<bean id="user" class="com.zhao.pojo.User" autowire="byType">
    <property name="str" value="qinjiang"/>
 </bean>
-
+```
 4、测试，报错：NoUniqueBeanDefinitionException
 
 5、删掉cat2，将cat的bean名称改掉！测试！因为是按类型装配，所以并不会报异常，也不影响最后的结果。甚至将id属性去掉，也不影响结果。
@@ -200,9 +200,9 @@ public class User {
 ```xml
 <context:annotation-config/>
 
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat" class="com.kuang.pojo.Cat"/>
-<bean id="user" class="com.kuang.pojo.User"/>
+<bean id="dog" class="com.zhao.pojo.Dog"/>
+<bean id="cat" class="com.zhao.pojo.Cat"/>
+<bean id="user" class="com.zhao.pojo.User"/>
 ```
 3、测试，成功输出结果！
 
@@ -219,10 +219,10 @@ Tips: 如果@Autowired 后面跟标注 @Autowired(required=false)，说明：fal
 1、配置文件修改内容
 
 ```xml
-<bean id="dog1" class="com.kuang.pojo.Dog"/>
-<bean id="dog2" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
+<bean id="dog1" class="com.zhao.pojo.Dog"/>
+<bean id="dog2" class="com.zhao.pojo.Dog"/>
+<bean id="cat1" class="com.zhao.pojo.Cat"/>
+<bean id="cat2" class="com.zhao.pojo.Cat"/>
 ```
 
 2、没有加Qualifier测试，直接报错
@@ -264,19 +264,19 @@ public class User {
 
 beans.xml
 ```xml
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
+<bean id="dog" class="com.zhao.pojo.Dog"/>
+<bean id="cat1" class="com.zhao.pojo.Cat"/>
+<bean id="cat2" class="com.zhao.pojo.Cat"/>
 
-<bean id="user" class="com.kuang.pojo.User"/>
+<bean id="user" class="com.zhao.pojo.User"/>
 ```
 测试：结果OK
 
 删除 beans.xml 的 cat2
 
 ```xml
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
+<bean id="dog" class="com.zhao.pojo.Dog"/>
+<bean id="cat1" class="com.zhao.pojo.Cat"/>
 ```
 
 实体类上只保留注解

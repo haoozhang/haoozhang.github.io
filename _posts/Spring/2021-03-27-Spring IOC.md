@@ -2,7 +2,7 @@
 layout:     post
 title:      2. Spring IOC
 subtitle:   
-date:       2021-03-28
+date:       2021-03-27
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
@@ -163,16 +163,17 @@ IOC 是 Spring 框架的核心内容，我们可以使用 XML 文件配置，也
 </dependency>
 ```
 
-1、编写一个Hello实体类
+1、编写一个 User 实体类
 
 ```java
-public class Hello {
+public class User {
 
     private String name;
  
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -192,10 +193,10 @@ public class Hello {
       xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <!-- bean就是java 对象 , 由 Spring 创建和管理 -->
-   <bean id="hello" class="com.zhao.Hello">
-       <property name="name" value="Spring"/>
-   </bean>
+    <!-- bean 就是 Java 对象 , 由 Spring 创建和管理 -->
+    <bean id="user" class="com.zhao.pojo.User">
+        <property name="name" value="Spring"/>
+    </bean>
 
 </beans>
 ```
@@ -204,12 +205,12 @@ public class Hello {
 
 ```java
 @Test
-public void test(){
-   // 解析 beans.xml 文件 , 生成管理相应的 Bean 对象
-   ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-   // getBean: 参数即为spring配置文件中bean的id .
-   Hello hello = (Hello) context.getBean("hello");
-   hello.show();
+public void testUser() {
+    // 解析 beans.xml 文件 , 生成管理相应的 Bean 对象
+    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+    // getBean: 参数为 spring 配置文件中 bean 的 id
+    User user = (User) context.getBean("user");
+    user.show();
 }
 ```
 

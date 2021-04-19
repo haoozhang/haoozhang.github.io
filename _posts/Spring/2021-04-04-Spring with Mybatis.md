@@ -81,16 +81,24 @@ mybatis-spring整合包
 配置Maven静态资源过滤问题！
 ```xml
 <build>
-   <resources>
-       <resource>
-           <directory>src/main/java</directory>
-           <includes>
-               <include>**/*.properties</include>
-               <include>**/*.xml</include>
-           </includes>
-           <filtering>true</filtering>
-       </resource>
-   </resources>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+    </resources>
 </build>
 ```
 
@@ -208,7 +216,7 @@ SqlSessionFactory 有一个唯一的必要属性：用于 JDBC 的 DataSource。
 
 一个常用的属性是 configLocation，它用来指定 MyBatis 的 XML 配置文件路径。它在需要修改 MyBatis 的基础配置非常有用。通常，基础配置指的是 \<settings> 或 \<typeAliases>元素。
 
-需要注意的是，这个配置文件并不需要是一个完整的 MyBatis 配置。确切地说，任何环境配置（<environments>），数据源（<DataSource>）和 MyBatis 的事务管理器（<transactionManager>）都会被忽略。SqlSessionFactoryBean 会创建它自有的 MyBatis 环境配置（Environment），并按要求设置自定义环境的值。
+需要注意的是，这个配置文件并不需要是一个完整的 MyBatis 配置。确切地说，任何环境配置（\<environments>），数据源（\<DataSource>）和 MyBatis 的事务管理器（\<transactionManager>）都会被忽略。SqlSessionFactoryBean 会创建它自有的 MyBatis 环境配置（Environment），并按要求设置自定义环境的值。
 
 在基础的 MyBatis 用法中，是通过 SqlSessionFactoryBuilder 来创建 SqlSessionFactory 的。而在 MyBatis-Spring 中，则使用 SqlSessionFactoryBean 来创建。
 
@@ -247,7 +255,7 @@ public class UserDaoImpl implements UserDao {
 </bean>
 ```
 
-## 整合 Mybatis 方式一
+## Spring 整合 Mybatis
 
 1、Spring配置文件beans.xml
 ```xml
@@ -335,7 +343,7 @@ public void test2(){
 </configuration>
 ```
 
-## 整合 Mybatis 方式二
+## SqlSessionSupport
 
 mybatis-spring1.2.3版以上提供了 SqlSessionSupport 类。该类通过注入 SqlSessionFactory，可以直接通过 getSqlSession() 获得 SqlSession，绕过SqlSessionTemplate。
 

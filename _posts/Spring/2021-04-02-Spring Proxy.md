@@ -82,7 +82,7 @@ public class Proxy implements Rent {
 
     // 收费
     public void fee(){
-        System.out.println("收中介费");
+        System.out.println("收房租");
     }
 }
 
