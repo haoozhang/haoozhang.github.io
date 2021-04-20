@@ -142,7 +142,7 @@ public class HelloController implements Controller {
 9、将自己的类交给SpringIOC容器，注册bean
 ```xml
 <!--Handler-->
-<bean id="/hello" class="com.kuang.controller.HelloController"/>
+<bean id="/hello" class="com.zhao.controller.HelloController"/>
 ```
 10、写要跳转的jsp页面，显示ModelandView存放的数据，以及我们的正常页面；
 
@@ -150,7 +150,7 @@ public class HelloController implements Controller {
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-   <title>Kuangshen</title>
+   <title>zhao</title>
 </head>
 <body>
 ${msg}
@@ -245,7 +245,7 @@ ${msg}
        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
    <!-- 自动扫描包，让指定包下的注解生效,由IOC容器统一管理 -->
-   <context:component-scan base-package="com.kuang.controller"/>
+   <context:component-scan base-package="com.zhao.controller"/>
    <!-- 让Spring MVC不处理静态资源 -->
    <mvc:default-servlet-handler />
    <!--

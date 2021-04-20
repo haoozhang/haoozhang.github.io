@@ -48,7 +48,7 @@ public interface Controller {
         <property name="suffix" value=".jsp"/>
     </bean> 
 
-    <bean id="/hello" class="com.kuang.controller.HelloController"/>
+    <bean id="/hello" class="com.zhao.controller.HelloController"/>
 
 </beans>
 ```
@@ -61,7 +61,7 @@ public interface Controller {
 
 ```xml
 <!-- 自动扫描指定的包，下面所有注解类交给IOC容器管理 -->
-<context:component-scan base-package="com.kuang.controller"/>
+<context:component-scan base-package="com.zhao.controller"/>
 ```
 
 上一篇我们已经使用 @Controller 注解实现 SpringMVC 了。注解方式是推荐使用的方式！

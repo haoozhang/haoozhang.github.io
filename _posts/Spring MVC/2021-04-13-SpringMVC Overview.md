@@ -136,7 +136,7 @@ public class HelloServlet extends HttpServlet {
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-   <title>Kuangshen</title>
+   <title>zhao</title>
 </head>
 <body>
 ${msg}
@@ -154,7 +154,7 @@ ${msg}
         version="4.0">
    <servlet>
        <servlet-name>HelloServlet</servlet-name>
-       <servlet-class>com.kuang.servlet.HelloServlet</servlet-class>
+       <servlet-class>com.zhao.servlet.HelloServlet</servlet-class>
    </servlet>
    <servlet-mapping>
        <servlet-name>HelloServlet</servlet-name>
