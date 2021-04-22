@@ -8,7 +8,7 @@ header-img: img/post/post_bg_coffee.jpg
 catalog: true
 mathjax: true
 tags:
-    - Spring
+    - Spring, Mybatis
 ---
 
 ## 导包
