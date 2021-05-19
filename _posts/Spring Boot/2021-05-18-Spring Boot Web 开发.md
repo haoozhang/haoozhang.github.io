@@ -57,6 +57,8 @@ webjars 本质就是以 jar 包的形式导入静态资源。之前我们导入�
 
 引入依赖之后，查看 webjars 目录结构，我们访问 Jquery.js 文件
 
+![img](/img/post/SpringBoot/jquery_webjars.png)
+
 ```
 localhost:8080/webjars/jquery/3.4.1/jquery.js
 ```
@@ -307,7 +309,7 @@ public String test2(Map<String,Object> map){
 ```
 7、启动项目测试
 
-## MVC自动配置原理
+## MVC 自动配置原理
 
 在项目编写前，我们还需要了解一个点，就是 Spring Boot 对 SpringMVC 做了哪些配置，我们如何扩展它。在 Spring Boot 的官方文档[这里](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-developing-web-applications)中，我们可以看到如下片段
 
@@ -465,4 +467,8 @@ public class WebMvcAutoConfiguration {
 本篇我们以 HttpEncodingAutoConfiguration 为例学习了自动配置的原理。
 
 参考自：
-1. [狂神说SpringBoot05：自动配置原理](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483766&idx=1&sn=27739c5103547320c505d28bec0a9517&scene=19#wechat_redirect)
+1. [狂神说SpringBoot10：Web开发静态资源处理](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483796&idx=1&sn=ea13e2858328a582338e89c3459021c1&scene=19#wechat_redirect)
+
+2. [狂神说SpringBoot11：Thymeleaf模板引擎](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483807&idx=1&sn=7e1d5df51cdeb046eb37dec7701af47b&scene=19#wechat_redirect)
+
+3. [狂神说SpringBoot12：MVC自动配置原理](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483819&idx=1&sn=b9009aaa2a9af9d681a131b3a49d8848&scene=19#wechat_redirect)
