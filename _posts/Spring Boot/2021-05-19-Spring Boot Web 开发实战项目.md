@@ -17,7 +17,7 @@ tags:
 
 ### 静态资源准备
 
-我们先从[这里]()下载好静态资源文件，主要包括几个页面和一些静态资源。
+我们先从[这里](https://github.com/haozhangms/SpringBoot_blog/tree/main/SpringBoot%20Web%20Template)下载好静态资源文件，主要包括几个页面和一些静态资源。
 
 新建 Spring Boot 项目，将上面文件夹中的 html 页面放到项目工程的 template 目录下，将 assets 文件夹下的内容放到 static 目录下，这样静态资源就导入完毕了，之后我们再根据需求详细修改这些静态资源。
 
@@ -462,12 +462,275 @@ public void addInterceptors(InterceptorRegistryregistry) {
 
 最后启动项目测试，我们可以先访问 main 页面，发现被转发到登录页面，拦截成功！
 
-## 
+## 展示列表
 
+接下来完成核心功能：增删改查。我们先展示员工列表
+
+### 公共页面代码提取和复用
+
+我们观察 dashboard 和 list 两个页面可以看到，它们的顶边栏和侧边栏都是一样的，所以我们可以提取复用这部分公共的页面代码。首先，我们新建 commons/commons.html 文件，然后使用 th:fragment 提取以下代码片段
+
+![img](/img/post/SpringBoot/th_fragment.png)
+
+然后在 dashbaord 和 list 页面的顶栏和侧边栏位置使用 th:replace 引用这个片段，这样就实现了代码的复用
+
+![img](/img/post/SpringBoot/th_replace.png)
+
+为了可以在点击侧边栏按钮时实现高亮，我们在 th:replace 时传入参数，如上图所示。然后在渲染侧边栏时接受参数并判断
+
+![img](/img/post/SpringBoot/active.png)
+
+### 列表数据循环展示
+
+列表循环展示数据就比较简单了。我们之前已经在 /emps 接口返回了数据，现在我们把对应的侧边栏绑定该接口，然后在 list 页面的主体部分填充数据即可，这里主要用到了 th:each
+
+```html
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<h2>Section title</h2>
+	<div class="table-responsive">
+		<table class="table table-striped table-sm">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>email</th>
+					<th>gender</th>
+					<th>department</th>
+					<th>birth</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="emp:${emps}">
+					<td th:text="${emp.getId()}"></td>
+					<td th:text="${emp.getName()}"></td>
+					<td th:text="${emp.getEmail()}"></td>
+					<td th:text="${emp.getGender()==0?'女':'男'}"></td>
+					<td th:text="${emp.getDepartment().getDepartmentName()}"></td>
+					<td th:text="${#dates.format(emp.getBirth(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+					<td>
+						<button class="btn btn-sm btn-primary">编辑</button>
+						<button class="btn btn-sm btn-danger">删除</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</main>
+```
+
+## 增加员工
+
+### 员工信息表单提交界面
+
+为了新增一个员工，我们需要先写一个提交员工信息的表单界面，我们复制 list.html 名为 add.html，然后只需要在主体界面修改为表单即可
+
+```html
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<form th:action="@{/addEmp}" method="post">
+		<div class="form-group">
+			<label>Name</label>
+			<input type="text" name="name" class="form-control" placeholder="海绵宝宝">
+		</div>
+		<div class="form-group">
+			<label>Email</label>
+			<input type="email" name="email" class="form-control" placeholder="1176244270@qq.com">
+		</div>
+		<div class="form-group">
+			<label>Gender</label><br>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="gender" value="1">
+				<label class="form-check-label">男</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="gender" value="0">
+				<label class="form-check-label">女</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Department</label><br>
+			<!-- 这里提交的是 department 的 id，所以 name 要对应 -->
+			<select class="form-control" name="department.departmentId">
+				<option th:each="dept:${departments}" th:text="${dept.getDepartmentName()}" th:value="${dept.getDepartmentId()}"></option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label>Birth</label><br>
+			<input type="text" name="birth" class="form-control" placeholder="2020/1/2">
+		</div>
+		<button type="submit" class="btn btn-primary">添加</button>
+	</form>
+</main>
+```
+
+### 接口
+
+界面写好之后，我们需要写接口来控制跳转到表单界面和表单数据提交到后台。首先，我们实现跳转到表单界面，我们在展示页面 list.html 中添加一个新增按钮，当他被点击就会跳转到 add 页面。
+
+![img](/img/post/SpringBoot/toAdd.png)
+
+对应地，我们实现 /addEmp 接口。这里我们查询了所有部门并返回给前端，因为前端的 add 页面需要显示所有部门供用户选择。
+
+```java
+@GetMapping("/addEmp")
+public String toAdd(Model model) {
+    Collection<Department> departments = departmentMapper.selectAllDepartment();
+    model.addAttribute("departments", departments);
+    return "emp/add";
+}
+```
+
+在 add 页面，我们点击提交按钮之后，就会调用 /addEmp post 方法接口，把表单数据传递给后台。我们再实现 /addEmp post 方法接口
+
+```java
+@PostMapping("/addEmp")
+public String addEmp(Employee employee) {
+    // 添加员工操作
+    employeeMapper.addEmployee(employee);
+    return "redirect:/emps";
+}
+```
+
+从 add.html 中可以看到，表单的部门信息传递给后台的是部门的 id，所以它的 name 也要对应于 departmentId。并且，我们实现的 employeeMapper 中的添加员工的方法，也要先根据部门 id 查询到 Department 对象，再设置到 Employee 对象中
+
+```java
+// 主键自增
+private static int initId = 6;
+public void addEmployee(Employee employee) {
+    if (employee.getId() == null) {
+        employee.setId(initId++);
+    }
+    // 传入的对象中只有 department 的 id
+    Integer departmentId = employee.getDepartment().getDepartmentId();
+    employee.setDepartment(departmentMapper.selectDepartmentById(departmentId));
+    employeeMap.put(employee.getId(), employee);
+}
+```
+
+启动项目，测试添加员工！
+
+最后还需要注意的一点是，birth 格式目前必须为 yyyy/MM/dd 格式，这是因为 Spring Boot 默认的 dateFormatter 默认为该格式，你也可以在配置文件中修改。
+
+## 修改员工
+
+修改员工的逻辑和新增员工差不多。我们在 list 页面的 "编辑" 位置指定一个接口，当点击该按钮时，我们就执行这个接口的方法，把要修改的员工 id 传给后端
+```html
+<a class="btn btn-sm btn-primary" th:href="@{/updateEmp/}+${emp.id}">编辑</a>
+```
+
+我们在 controller 中实现这个接口，因为链接是 Restful 风格，所以接口参数也要是 Restful 风格。接口内查询要修改的员工信息，方便显示在更新页面；并且把部门信息也查询了，方便在页面上显示
+
+```java
+@GetMapping("/updateEmp/{id}")
+public String toUpdate(@PathVariable("id") Integer id, Model model) {
+    // 查询原来的数据
+    Employee employee = employeeMapper.selectEmployeeById(id);
+    model.addAttribute("emp", employee);
+    // 查询部门信息
+    Collection<Department> departments = departmentMapper.selectAllDepartment();
+    model.addAttribute("departments", departments);
+    return "emp/update";
+}
+```
+
+接下来编写一个 update 页面方便跳转，这里是复制了 add.html 然后修改主体部分内容
+
+```html
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<form th:action="@{/updateEmp}" method="post">
+        <!-- id 作为隐藏域传递 -->
+		<input type="hidden" name="id" th:value="${emp.getId()}">
+		<div class="form-group">
+			<label>Name</label>
+            <!-- 使用 th:value 显示后台传递的员工 emp 的名字 -->
+			<input type="text" name="name" class="form-control" th:value="${emp.getName()}">
+		</div>
+		<div class="form-group">
+			<label>Email</label>
+            <!-- 使用 th:value 显示后台传递的员工 emp 的 email -->
+			<input type="email" name="email" class="form-control" th:value="${emp.getEmail()}">
+		</div>
+		<div class="form-group">
+			<label>Gender</label><br>
+			<div class="form-check form-check-inline">
+                <!-- 使用 th:checked 显示哪一个性别被选择 -->
+				<input th:checked="${emp.getGender()==1}" class="form-check-input" type="radio" name="gender" value="1">
+				<label class="form-check-label">男</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input th:checked="${emp.getGender()==0}" class="form-check-input" type="radio" name="gender" value="0">
+				<label class="form-check-label">女</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Department</label><br>
+			<!-- 这里提交的是 department 的 id，所以 name 要对应 -->
+			<select class="form-control" name="department.departmentId">
+                <!-- 使用 th:selected 显示和员工部门相同的部门 -->
+				<option th:selected="${emp.getDepartment().getDepartmentId()==dept.getDepartmentId()}" th:each="dept:${departments}" th:text="${dept.getDepartmentName()}" th:value="${dept.getDepartmentId()}"></option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label>Birth</label><br>
+            <!-- 使用 th:value 显示 birth，并用 #dates.format 格式化 -->
+			<input th:value="${#dates.format(emp.getBirth(), 'yyyy/MM/dd')}" type="text" name="birth" class="form-control" placeholder="2020/1/2">
+		</div>
+		<button type="submit" class="btn btn-primary">更新</button>
+	</form>
+</main>
+```
+
+在提交按钮时，绑定 /updateEmp 接口，我们实现这个接口
+
+```java
+@PostMapping("/updateEmp")
+public String updateEmp(Employee employee) {
+    System.out.println("update--> " + employee);
+    // 更新员工操作
+    employeeMapper.addEmployee(employee);
+    return "redirect:/emps";
+}
+```
+
+## 删除员工
+
+删除员工比较简单，只需要在 list 页面的删除按钮出绑定一个接口，然后实现这个接口，删除员工即可
+
+```html
+<a class="btn btn-sm btn-danger" th:href="@{/deleteEmp/}+${emp.id}">删除</a>
+```
+
+```java
+@GetMapping("/deleteEmp/{id}")
+public String deleteEmp(@PathVariable("id") Integer id) {
+    employeeMapper.deleteEmployee(id);
+    return "redirect:/emps";
+}
+```
+
+## 404 处理
+
+Spring Boot 对 404 的配置非常简单，只需要在 templates 目录下新建一个 error 目录，然后放入 404.html 即可
+
+## 注销用户
+
+我们还需要实现注销用户的小功能。具体地，在 commons.html 页面的注销位置绑定一个接口，然后实现这个接口
+
+```html
+<a class="nav-link" th:href="@{/logout}">Sign out</a>
+```
+
+```java
+@GetMapping("/logout")
+public String logout(HttpSession session) {
+    session.invalidate();
+    return "redirect:/index";
+}
+```
 
 ## 总结
 
-本篇我们以 HttpEncodingAutoConfiguration 为例学习了自动配置的原理。
+本篇我们在了解了 Web 开发源码的基础上，实战练习了一个员工管理系统的 Web 开发项目，主要包括前期的一些准备工作和后面的 CRUD 业务功能。
 
 参考自：
-1. [狂神说SpringBoot05：自动配置原理](https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247483766&idx=1&sn=27739c5103547320c505d28bec0a9517&scene=19#wechat_redirect)
+1. [【狂神说Java】SpringBoot最新教程IDEA版通俗易懂](https://www.bilibili.com/video/BV1PE411i7CV?p=28)
