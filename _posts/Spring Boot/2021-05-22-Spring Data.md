@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      7. Spring Boot Data
+title:      7. Spring Data
 subtitle:   
 date:       2021-05-22
 author:     Hao
@@ -463,7 +463,7 @@ mybatis:
 </build>
 ```
 
-7、编写 controller 测试
+7、编写 controller 测试，这里为了测试方便我们直接调用了 mapper 层，一般中间还要再加一层 service 层
 
 ```java
 @RestController
