@@ -17,7 +17,7 @@ Spring Cloud 是一系列框架的集合。它利用 Spring Boot 的开发便利
 
 通俗地讲，Spring Cloud 就是用于构建微服务开发和治理的框架集合，并不是具体的一个框架
 
-![img](/img/post/SpringCloud/sc_def.png)
+![img](/img/SpringCloud/sc_def.png)
 
 ## Spring Cloud 和 Spring Boot 的关系
 
@@ -29,7 +29,7 @@ Spring Cloud 是一系列框架的集合。它利用 Spring Boot 的开发便利
 
 我们先从 Nginx 说起，最初的服务化解决方案是给相同服务提供一个统一的域名，然后服务调用者向这个域发送 HTTP 请求，由 Nginx 负责请求的分发和跳转。
 
-![img](/img/post/SpringCloud/nginx.png)
+![img](/img/SpringCloud/nginx.png)
 
 这种架构存在很多问题：Nginx 作为中间层，在配置文件中耦合了服务调用的逻辑，这削弱了微服务的完整性，也使得 Nginx 在一定程度上变成了一个重量级的 ESB。
 
@@ -47,7 +47,7 @@ Spring Cloud 是一系列框架的集合。它利用 Spring Boot 的开发便利
 + 通过 Monitor 监控系统，可以直观地展示服务调用的统计信息；
 + 服务消费者可以进行负载均衡、服务降级的选择。
 
-![img](/img/post/SpringCloud/dubbo.png)
+![img](/img/SpringCloud/dubbo.png)
 
 但是对于微服务架构而言，Dubbo 也有一些缺陷，比如：
 + Registry 严重依赖第三方组件（ZooKeeper 或者 Redis），当这些组件出现问题时，服务调用很快就会中断。
@@ -55,7 +55,7 @@ Spring Cloud 是一系列框架的集合。它利用 Spring Boot 的开发便利
 
 Dubbo 的定位始终是一款 RPC 框架，而 Spring Cloud 的目标是微服务架构下的一站式解决方案。作为新一代的服务框架，Spring Cloud 提出的口号是开发“面向云的应用程序”，它为微服务架构提供了更加全面的技术支持。结合我们一开始提到的微服务的诉求，参见表 1，把Spring Cloud 与 Dubbo 进行一番对比。
 
-![img](/img/post/SpringCloud/sc_vs_dubbo.png)
+![img](/img/SpringCloud/sc_vs_dubbo.png)
 
 Spring Cloud 抛弃了 Dubbo 的 RPC 通信，采用的是基于 HTTP 的 REST 方式。严格来说，这两种方式各有优劣。虽然从一定程度上来说，后者牺牲了服务调用的性能，但也避免了上面提到的原生 RPC 带来的问题。而且 REST 相比 RPC 更为灵活，服务提供方和调用方，不存在代码级别的强依赖，这在强调快速演化的微服务环境下显得更加合适。
 

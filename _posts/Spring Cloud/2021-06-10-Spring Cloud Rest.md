@@ -17,7 +17,7 @@ tags:
 
 由于 Spring Cloud 依赖 Spring Boot 开发，因此两者的版本要对应，否则会出现一些莫名其妙的问题。打开 Spring Cloud 某个版本的官方文档，首部会出现当前版本支持的 Spring Boot 版本，如下图：
 
-()
+![img](/img/SpringCloud/cloud_boot_version.png)
 
 这里我们选择最新的 Spring Cloud 稳定版本 2020.0.3，其对应的 Spring Boot 版本为 2.4.6。
 
@@ -383,7 +383,7 @@ public class DeptController {
 作为消费者，我们不应该调用 Service 层，而是要考虑如何远程调用提供的服务。这里我们使用 RestTemplate。\
 Spring Cloud 抛弃了 Dubbo 的 RPC 通信方式，改用基于 Http 的 REST API 调用方式，而 RestTemplate 是封装好的服务调用模板，用于访问远程 Http 服务，我们查看其源码可以看到如下的调用方法：
 
-()
+![img](/img/SpringCloud/restTemplate.png)
 
 因此，我们使用 RestTemplate 调用方法调用提供者的接口
 
