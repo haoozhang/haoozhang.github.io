@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Spring Cloud Rest
+title:      Spring Cloud 通过 REST API 消费服务
 subtitle:   
 date:       2021-06-10
 author:     Hao
