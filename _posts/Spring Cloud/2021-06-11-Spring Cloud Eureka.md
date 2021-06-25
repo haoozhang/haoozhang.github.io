@@ -15,8 +15,8 @@ tags:
 
 ## What is Eureka 
 
-Eureka 是 Netflix 的一个核心子模块，以基于 REST 的方式实现服务的注册与发现。
-服务的注册于发现对微服务架构十分重要，有了服务注册和发现，我们就可以根据服务标识符直接访问服务，而无需修改服务调用的配置文件。
+Eureka 是 Netflix 的一个核心子模块，以基于 REST 的方式实现服务的注册与发现，在 Spring Cloud 2020 版本中依然保留。
+服务的注册与发现对微服务架构十分重要，有了服务注册和发现，我们就可以根据服务标识符直接访问服务，而无需修改服务调用的配置文件。
 
 Spring Cloud 封装了 Netflix 开发的 Eureka 模块来实现服务注册和发现。
 Eureka 采用 CS 架构，Eureka Server 作为服务注册的服务器，也即服务注册中心；
@@ -115,7 +115,7 @@ eureka:
 
 3、在主启动类上添加 @EnableEurekaClient 注解，开启 Eureka 客户端，自动注册该服务到 Eureka Server
 
-4、启动项目，我们可以从 Eureka Server 页面上看到 注册的服务
+4、启动项目，我们可以从 Eureka Server 页面上看到注册的服务
 
 ![img](/img/SpringCloud/provider1.png)
 
@@ -193,7 +193,7 @@ eureka:
 
 4、启动项目，查看 Eureka 页面，可看到注册的服务。之后参照上面的步骤修改描述链接和信息
 
-5、修改 controller 的接口。之前我们是直接按照提供者的访问路径访问服务的，但有了 Eureka 之后，我们可以根据服务的标识符来访问服务，以 getDept 为例：
+5、修改 controller 的接口。之前我们是直接按照提供者的地址和端口号访问服务的，但有了 Eureka 之后，我们可以根据服务的标识符来访问服务，以 getDept 为例：
 
 ```java
 @Autowired

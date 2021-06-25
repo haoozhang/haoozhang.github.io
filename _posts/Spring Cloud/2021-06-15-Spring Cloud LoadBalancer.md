@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Spring Cloud Ribbon
+title:      Spring Cloud LoadBalancer
 subtitle:   
 date:       2021-06-15
 author:     Hao
@@ -11,12 +11,12 @@ tags:
     - Spring Cloud
 ---
 
-本文学习 Spring Cloud 中的负载均衡工具 Ribbon，基于前面搭建的工程环境进一步修改实现
+本文学习 Spring Cloud 中的负载均衡工具 Spring Cloud LoadBalancer，并基于前面搭建的工程环境进一步修改实现
 
-## What is Ribbon 
+## What is LoadBalancer 
 
-Spring Cloud Ribbon 是基于 Netflix Ribbon 实现的一套 **客户端负载均衡工具**。\
-简而言之，Ribbon 是 Netflix 发布的开源项目，提供客户端的负载均衡策略。通过在配置文件中列出 Load Balancer 后面的服务，它可以基于某种规则 (轮询，随机) 去连接服务，我们也可以使用 Ribbon 自定义负载均衡策略。
+我们先从 Ribbon 讲起，Spring Cloud Ribbon 是基于 Netflix Ribbon 实现的一套 **客户端负载均衡工具**。\
+具体地，Ribbon 是 Netflix 发布的开源项目，提供客户端的负载均衡策略。通过在配置文件中列出 Load Balancer 后面的服务，它可以基于某种规则 (轮询，随机) 去连接服务，我们也可以使用 Ribbon 自定义负载均衡策略。
 
 LB，即负载均衡，指将用户的请求平摊到分配的多个服务上，以达到系统的高可用性，是微服务和分布式集群中常用的一种功能。\
 常见的复杂均衡工具有 Nginx、Lvs 等；Dubbo 和 Spring Cloud 均提供了负载均衡。
@@ -25,8 +25,11 @@ LB，即负载均衡，指将用户的请求平摊到分配的多个服务上，
 + 进程内 LB：将 LB 逻辑集成到消费方，消费方从服务中心获取可用服务列表，并按照策略选择某个服务
 
 Ribbon 就属于进程内 LB，它只是一个类库，集成在消费方进程，消费方通过它来获取服务的具体地址。\
+而在 Spring Cloud 2020 版本以后，Spring Cloud 团队移除了 Ribbon 组件，而用自己实现的产品 Spring Cloud LoadBalancer 替代。它的功能与 Ribbon 相同，但配置方式略有不同。\
 我们之前学习 Eureka 时引入了 spring-cloud-netflix-eureka 依赖。**在 Spring Cloud 2020.0.3 版本以后，
-spring-cloud-netflix-eureka 已经包含了 ribbon，所以我们无需再显式引入 Ribbon 依赖**
+spring-cloud-netflix-eureka 已经包含了负载均衡，所以我们无需再显式引入 Spring Cloud LoadBalancer 依赖**
+
+![img](/img/SpringCloud/lb-depend.png)
 
 接下来，我们要配置负载均衡，因为我们是使用 RestTemplate 来调用请求的，所以我们让 RestTemplate 实现负载均衡即可。给 RestTemplate bean 实例添加如下注解
 
@@ -38,17 +41,17 @@ public RestTemplate restTemplate() {
 }
 ```
 
-使用 Ribbon 做负载均衡之后，我们不用再把远程访问的地址写死，因为它要选择其中的一个服务 (即便我们现在只有一个服务)，我们可以修改消费方的 controller 中远程访问的地址前缀
+使用 LoadBalancer 负载均衡之后，我们不用再把远程访问的地址写死，因为它要选择其中的一个服务 (即便我们现在只有一个服务)，我们可以修改消费方的 controller 中远程访问的地址前缀
 
 ```java
 private static String REST_URL_PREFIX = "http://provider";
 ```
 
-配置以上内容后，我们就可以启动项目体验一下 Ribbon 了。依次启动 Eureka、Provider、Consumer，然后按照消费方的 controller 中的访问路径测试链接，可以看到访问成功。
+配置以上内容后，我们就可以启动项目体验一下负载均衡了。依次启动 Eureka、Provider、Consumer，然后按照消费方的 controller 中的访问路径测试链接，可以看到访问成功。
 
-## Ribbon 实现负载均衡
+## LoadBalancer 实现负载均衡
 
-上面只是简单配置了 Ribbon，但因为目前只有一个服务提供者，所以我们并没有显式地体会到它负载均衡的效果。接下来我们创建两个 Provider 来实现负载均衡。
+上面只是简单配置了负载均衡，但因为目前只有一个服务提供者，所以我们并没有显式地体会到它均衡的效果。接下来我们创建两个 Provider 来实现负载均衡。
 
 1、我们首先创建底层的数据库，它的内容和之前的数据库内容一样，除了 db_source 列显示的库名不同
 
@@ -69,9 +72,9 @@ private static String REST_URL_PREFIX = "http://provider";
 
 ![img](/img/SpringCloud/ribbon_archi.png)
 
-## Ribbon 自定义负载均衡策略
+## LoadBalancer 自定义负载均衡策略
 
-Ribbon 已经提供了一些负载均衡策略，比如轮询、随机等，默认为轮询。当然，我们也可以自定义一些负载均衡策略。
+LoadBalancer 已经提供了一些负载均衡策略，比如轮询、随机等，默认为轮询。当然，我们也可以自定义一些负载均衡策略。
 
 首先，我们更改它的默认负载均衡策略，根据[官网文档](https://docs.spring.io/spring-cloud-commons/docs/3.0.3/reference/html/#spring-cloud-loadbalancer)示例，创建如下类
 

@@ -11,7 +11,7 @@ tags:
     - Spring Cloud
 ---
 
-本文通过搭建服务提供者 (Provider) 和消费者 (Comsumer) 的环境学习 Spring Cloud 通过 REST 调用服务，顺便复习 Spring，Mybatis，Maven 等知识。
+本文通过搭建服务提供者 (Provider) 和消费者 (Comsumer) 的环境学习 Spring Cloud 通过 REST 调用服务，顺便复习 Spring、Mybatis、Maven 等知识。
 
 ## Spring Cloud 版本选择
 
@@ -19,7 +19,7 @@ tags:
 
 ![img](/img/SpringCloud/cloud_boot_version.png)
 
-这里我们选择最新的 Spring Cloud 稳定版本 2020.0.3，其对应的 Spring Boot 版本为 2.4.6。
+这里我们选择 Spring Cloud 最新的稳定版本 2020.0.3，其对应的 Spring Boot 版本为 2.4.6。
 
 ## 搭建实体类微服务环境
 
@@ -385,7 +385,7 @@ Spring Cloud 抛弃了 Dubbo 的 RPC 通信方式，改用基于 Http 的 REST A
 
 ![img](/img/SpringCloud/restTemplate.png)
 
-因此，我们使用 RestTemplate 调用方法调用提供者的接口
+因此，我们使用 RestTemplate 的这些方法调用服务提供者的接口
 
 ```java
 @RestController
@@ -443,7 +443,7 @@ public class DeptConsumer {
 }
 ```
 
-5、先启动提供者项目，再启动消费者项目，访问如下的路径，测试远程调用服务，可以看到对应的输出
+5、依次启动提供者、消费者项目，访问如下的路径测试远程调用服务，可以看到对应的输出
 
 ```
 $ http://localhost:8080/dept/get
