@@ -497,6 +497,8 @@ public class GatewayApplication {
 ![img](/img/SpringCloud/gateway_output.png)
 
 参考自：
-1. [Spring Cloud Gateway工作流程](https://www.fangzhipeng.com/springcloud/2018/12/05/sc-f-gateway2.html)
+1. [极速体验SpringCloud Gateway](https://blog.csdn.net/boling_cavalry/article/details/94907172)
+2. [Spring Cloud Gateway 之Predict篇](https://www.fangzhipeng.com/springcloud/2018/12/05/sc-f-gateway2.html)
+3. [Spring Cloud Gateway之Filter篇](https://www.fangzhipeng.com/springcloud/2018/12/05/sc-f-gateway2.html)
 
 
