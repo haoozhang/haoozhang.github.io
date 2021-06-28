@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      Spring Cloud Circuit Breaker
-subtitle:   
+title:      Spring Cloud Circuit Breaker 服务熔断
+subtitle:   以 Sentinel 实现服务熔断
 date:       2021-06-17
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
