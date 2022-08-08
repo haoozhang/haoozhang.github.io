@@ -1,0 +1,179 @@
+---
+layout:     post
+title:      Chapter 8. Methods
+subtitle:   
+date:       2022-08-08
+author:     Hao
+header-img: img/post/post_bg_coffee.jpg
+catalog: true
+mathjax: true
+tags:
+    - CLR via C#
+---
+
+This chapter focuses on the various kinds of methods, including instance constructor and type constructor, operator overload methods and type conversion, extension methods that allow you to add your own instance methods to existing types, and partial methods that spread a type's implementation into multiple parts.
+
+# Instance Constructor and Reference Types
+
+Instance constructors are specific methods that **initialize an instance of a type** to be initial state, are always called **.ctor** in method definition metadata table.
+
+When creating an instance of a reference type, firstly **allocate memory** for instance's data fields, and the object's overhead fields (type object pointer and sync block index). \
+Then the memory is always **zeroed**, to gurantee all fields have a value of 0 or null even if they are not explicitly initialized. \
+And then the **instance constructor is called** to set the initial state of object.
+
+Instance constructors are **never inherited**, so can not apply modifiers: virtual, new, override, sealed, or abstract.
+
+C# compiler provides a **default parameterless constructor** if the class does not define any constructors, except static class.
+
+Instance constructor will call the constructor of base class automatically, until called System.Object's constructor.
+
+In a few cases, we can create instance without instance constructor. For example, calling **Object’s MemberwiseClone** method allocates memory, initializes object’s overhead fields, and then copies the source object’s bytes to the new object. Deserializing an object with the runtime serializer allocates memory for object by using **GetUninitializedObject** method.
+
+For those convenient sytax that initialize the instance fields inline, compiler will **translate inline initialization to code in constructor** and perform initialization. For following code, every constructor initialize *m_x* and *m_s*, then perform actual constructor method. 
+
+```c#
+internal sealed class SomeType {
+   private Int32  m_x = 5;
+   private String m_s = "Hi there";
+   private Byte   m_b;
+   // Here are some constructors.
+   public SomeType()         { ... }
+   public SomeType(Int32 x)  { ... }
+}
+```
+
+# Instance Constructor and Structures (Value Types)
+
+C# compiler doesn't emit default parameterless constructors for value types. The fields of the value types are initialized to 0/null.
+
+CLR does allow you to define constructors on value types. But it is executed **only when explicitly called**. 
+```c#
+internal struct Point {
+    public Int32 m_x, m_y;
+    public Point() {
+        m_x = m_y = 5;
+    }
+}
+internal sealed class Rectangle {
+    public Point m_topLeft, m_bottomRight;
+    public Rectangle() {
+    }
+}
+```
+In this code, due to complier will never call value type's default construtor, even if it offers a parameterless constructor. The *m_x* and *m_y* are still 0.
+
+C# doesn’t allow a value type to define a parameterless constructor.
+
+# Type Constructor
+
+also known as *static constructor, class constructor, type intializer*.
+
+Type construcotr are also used to set initial state of a type. Types **don't have type constructor default**. If has, it can **have no more than one**. And, type constructors **never have parameters**.
+
+How to define the type constructor for reference type and value type.
+```c#
+internal sealed class SomeRefType {
+    static SomeRefType() {
+        // This executes the first time a SomeRefType is accessed.
+    }
+}
+internal struct SomeValType {
+    // C# does allow value types to define parameterless type constructors.
+    static SomeValType() {
+        // This executes the first time a SomeValType is accessed.
+    }
+}
+```
+
+For calling type constructor, 
+1. when JIT (just-in-time) compiler is compiling a method, it sees what types are referenced. If any type defines type constructor, it will check if it has already been executed for this AppDomain.
+2. If never executed, JIT compiler will emit the call to type constructor into native code. If already executed, JIT will not emit the call.
+3. When thread executes the native code of the method, it may that multiple threads execute the same methods concurrently. CLR ensure that a type’s constructor executes **only once per AppDomain**.
+4. Calling thread acquires a mutually exclusive thread synchronization lock when calling type constructor. Other threads will be blocked until the calling thread leaves. Then they will check if it has been executed. If yes, they will simply return.
+
+Because that type constructor executes only once per App- Domain and is thread-safe, it's a great palce to **initialize any singleton objects**.
+
+Type constructor is to **initialize static fields**. C# also offers the convenient syntax inline. Similarly, compiler automatically generates a type constructor to perform intialization.
+
+# Operator Overload Methods
+
+String, Decimal and DatetTime overload the equlity (==) and inequality (!=) operators. 
+
+CLR doesn’t know anything about operator overloading because it doesn’t even know what an operator is. This is the feature of programming language.
+
+Operator overload methods must be public and static methods. And, at least one parameter must be same as the type that method is defined within, which can help C# to search possible operator method quickly.
+```c#
+public sealed class Complex {
+   public static Complex operator+(Complex c1, Complex c2) { ... }
+}
+```
+
+# Conversion Operator Methods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+找出数组中重复的数字。
+
+在一个长度为 **n** 的数组 **nums** 里的所有数字都在 **0～n-1** 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
+
+链接：[3. 数组中重复的数字](https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
+
+#### 方法一
+
+判断元素是否重复一般用集合Set，代码如下。
+
+```java
+public static int findRepeatNumber(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    Set<Integer> set = new HashSet<>();
+    for (int num : nums) {
+        if (set.contains(num)) {
+            return num;
+        }
+        set.add(num);
+    }
+    return 0;
+}
+```
+
+#### 方法二
+
+因为长度为 **n** 的数组中，元素为 **0~n-1**。所以理想情况下 **nums[i] == i**。
+现在因为数组中有重复元素，所以当我们遇到 **nums[i] != i** 的情况时，就交换 **nums[i]** 和 **i** 这两个位置的元素，直至满足条件 **nums[i] == i**。同时，如果发现交换的这两个位置元素相等，即 **nums[i] == nums[nums[i]]**，则直接返回重复元素。
+
+```java
+public static int findRepeatNumber(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    for (int i = 0; i < nums.length; i++) {
+        while (nums[i] != i) {
+            if (nums[i] == nums[nums[i]]) {
+                return nums[i];
+            }
+            swap(nums, i, nums[i]); // swap elements
+        }
+    }
+    return 0;
+}
+
+private static void swap(int[] nums, int i, int j) {
+    int tmp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = tmp;
+}
+```
