@@ -97,11 +97,11 @@ Type constructor is to **initialize static fields**. C# also offers the convenie
 
 # Operator Overload Methods
 
-String, Decimal and DatetTime overload the equlity (==) and inequality (!=) operators. 
+String, Decimal and DatetTime types overload the equlity (==) and inequality (!=) operators. 
 
-CLR doesn’t know anything about operator overloading because it doesn’t even know what an operator is. This is the feature of programming language.
+CLR doesn’t know anything about operator overloading because it doesn’t even know what an operator is. This is the feature provided by programming language.
 
-Operator overload methods must be public and static methods. And, at least one parameter must be same as the type that method is defined within, which can help C# to search possible operator method quickly.
+Operator overload methods must be **public and static** methods. And, at least one parameter must be same as the type that method is defined within, which can help C# to search possible operator method quickly.
 ```c#
 public sealed class Complex {
    public static Complex operator+(Complex c1, Complex c2) { ... }
@@ -110,70 +110,152 @@ public sealed class Complex {
 
 # Conversion Operator Methods
 
+Occasionally, we intend to convert an object from one type to another different type. If the source type and target type are all primitive types, compiler knows how to convert the object. \
+If the source type or target type is not a primitive, the compiler will let CLR to perform the conversion (cast). CLR just checks if the source type is same as target type, or derived from target type. \
+Sometimes, we want to convert source type to a completely different type, we can define public constructor that take the parameter: an instance of the source type. Also, we can define public instance method (ToXXX) to convert this type to XXX type.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-找出数组中重复的数字。
-
-在一个长度为 **n** 的数组 **nums** 里的所有数字都在 **0～n-1** 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
-
-链接：[3. 数组中重复的数字](https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
-
-#### 方法一
-
-判断元素是否重复一般用集合Set，代码如下。
-
-```java
-public static int findRepeatNumber(int[] nums) {
-    if (nums == null || nums.length == 0) {
-        return 0;
-    }
-    Set<Integer> set = new HashSet<>();
-    for (int num : nums) {
-        if (set.contains(num)) {
-            return num;
-        }
-        set.add(num);
-    }
-    return 0;
+some programming languages (such as C#) also offer conversion operator overloading, which mandates that must be **public and static**. In addition, C# requires that either the parameter or the return type must be the same as the type that the conversion method is defined within.
+```c#
+// Implicitly constructs and returns a Rational from a Single
+public static implicit operator Rational(Single num) {
+    return new Rational(num);
+}
+// Explicitly returns an Int32 from a Rational
+public static explicit operator Int32(Rational r) {
+    return r.ToInt32();
 }
 ```
 
-#### 方法二
+Recommend to learn about *System.Decimal* type to further understand operator overload methods and conversion operator methods.
 
-因为长度为 **n** 的数组中，元素为 **0~n-1**。所以理想情况下 **nums[i] == i**。
-现在因为数组中有重复元素，所以当我们遇到 **nums[i] != i** 的情况时，就交换 **nums[i]** 和 **i** 这两个位置的元素，直至满足条件 **nums[i] == i**。同时，如果发现交换的这两个位置元素相等，即 **nums[i] == nums[nums[i]]**，则直接返回重复元素。
+# Extension Methods
 
-```java
-public static int findRepeatNumber(int[] nums) {
-    if (nums == null || nums.length == 0) {
-        return 0;
-    }
-    for (int i = 0; i < nums.length; i++) {
-        while (nums[i] != i) {
-            if (nums[i] == nums[nums[i]]) {
-                return nums[i];
-            }
-            swap(nums, i, nums[i]); // swap elements
+We use an example to understand C#'s extension methods. *StringBuilder* class is the preferred way of manipulating a string because it is mutable. So, let’s say that we would like to define some missing methods to operate on a StringBuilder, e.g., *IndexOf* method as follows.
+```c#
+public static class StringBuilderExtensions {
+    public static Int32 IndexOf(StringBuilder sb, Char value) {
+        for (Int32 index = 0; index < sb.Length; index++) {
+            if (sb[index] == value) return index;
         }
+        return ­-1; 
     }
-    return 0;
-}
-
-private static void swap(int[] nums, int i, int j) {
-    int tmp = nums[i];
-    nums[i] = nums[j];
-    nums[j] = tmp;
 }
 ```
+
+Then, we can use this method via following code.
+```c#
+StringBuilder sb = new StringBuilder("Hello. My name is Jeff.");
+Int32 index = StringBuilderExtensions.IndexOf(sb.Replace('.', '!'), '!');
+```
+This code can work fine, but it's not ideal from a programmer'd perspective. First, we must know the existance of *StringBuilderExtensions* class and *IndexOf* method. Second, the code doesn't reflect the order of operations. We want to *Replace* first, then call *IndexOf*, but *IndexOf* appears first and *Replace* appears second.
+
+Now, we need C#’s extension methods, which allows to define a static method that we can invoke using instance method syntax.
+```c#
+public static class StringBuilderExtensions {
+    public static Int32 IndexOf(this StringBuilder sb, Char value) {
+        for (Int32 index = 0; index < sb.Length; index++) {
+            if (sb[index] == value) return index;
+        }
+        return ­-1; 
+    }
+}
+```
+We can just call it using following sytax.
+```c#
+Int32 index = sb.IndexOf('X');
+```
+
+We can also **define extension methods for interface types**, as the following code shows.
+```c#
+public static void ShowItems<T>(this IEnumerable<T> collection) {
+    foreach (var item in collection)
+        Console.WriteLine(item);
+}
+```
+
+The extension methos can be invoked using any expression that implements the IEnumerable\<T\> interface.
+```c#
+public static void Main() {
+    // Shows each Char on a separate line in the console
+    "Grant".ShowItems();
+    // Shows each String on a separate line in the console
+    new[] { "Jeff", "Kristin" }.ShowItems();
+    // Shows each Int32 value on a separate line in the console
+    new List<Int32>() { 1, 2, 3 }.ShowItems();
+}
+```
+
+## Rules and Guidelines
+
++ C# supports **extension methods only**, not extension properties / events / operators.
++ Extension methods must be declared in **non-generic, static classes**, must have **at least one parameter, and only the first parameter can be marked with *this* keyword**.
++ The static class that define extension methods **must have file scope**. In other words, you can't define extension methods in the static class nested within another class.
+
+# Partial Methods
+
+If we customize methods in one class, Normally, customization would be done by invoking virtual methods. base class have to contain definitions for virtual methods, and this methods would be implemented is to do nothing and simply return. Then, we define own class, derive it from the base class, and override any virtual methods.
+```c#
+internal class Base {
+    private String m_name;
+
+    // Called before changing the m_name field
+    protected virtual void OnNameChanging(String value) {
+    }
+    
+    public String Name {
+        get { return m_name; }
+        set {
+            OnNameChanging(value.ToUpper());  // Inform class of potential change
+            m_name = value;                   // Change the field
+        }
+    }   
+}
+
+internal class Derived : Base {
+    protected override void OnNameChanging(string value) {
+        if (String.IsNullOrEmpty(value))
+            throw new ArgumentNullException("value");
+    }
+}
+```
+
+There are two problems for this way. First, the base class must be a mot-sealed class. Second, there are performance problem here. A type is defined just to override a method.
+
+So, C#'s partial methods allows to overrides behavior while fixing above problems.
+```c#
+internal sealed partial class Base {
+    private String m_name;
+   
+    // This defining­partial­method­declaration is called before changing the m_name field
+    partial void OnNameChanging(String value);
+   
+    public String Name {
+        get { return m_name; }
+        set {
+            OnNameChanging(value.ToUpper());  // Inform class of potential change
+            m_name = value;                   // Change the field
+        }
+    } 
+}
+
+internal sealed partial class Base {
+    // This implementing­partial­method­declaration is called before m_name is changed
+    partial void OnNameChanging(String value) {
+        if (String.IsNullOrEmpty(value))
+            throw new ArgumentNullException("value");
+    } 
+}
+```
+
++ The class is now **sealed**, In fact, it **could be static, even a value type**.
++ The partial method in original class is marked with *partial* keyword and has no body.
++ The partial method in new class is also marked with *partial* keyword and has a body.
+
+**If there is no implementing partial method declaration, the compiler will not generate any metadata representing the partial method.** So, there is big improvement with partial methods. 
+
+## Rules and Guidelines
+
++ Partial methods can only be declared within a partial class or struct.
++ Partial methods must have a **return type of void**, and cannot have any parameters marked with *out* modifier.
++ partial method declaration and implementation must have identical signature.
++ Partial methods are **always considered to be private**. 
