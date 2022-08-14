@@ -132,9 +132,26 @@ To help reduce the performance hit, consider defining a few overloaded methods t
 
 # Parameter and Return Type Guidelines
 
+When declaring a method’s **parameter types**, you should **specify the weakest type** possible, preferring interfaces over base classes. For example, 
+```c#
+// Desired: This method uses a weak parameter type
+public void ManipulateItems<T>(IEnumerable<T> collection) { ... }
 
+// Undesired: This method uses a strong parameter type
+public void ManipulateItems<T>(List<T> collection) { ... }
+```
 
+The reason is that someone can call the first method passing in an array object, a List\<T> object, a String object, and so on—any object whose type implements IEnumerable\<T>. The second method allows only List\<T> objects to be passed in; it will not accept an array or a String object. \
+Obviously, the first method is better because it is much more flexible and can be used in a much wider range of scenarios.
 
+It is usually best to declare a method’s **return type by using the strongest type** possible. For example, it is better to declare a method that returns a FileStream object as opposed to returning a Stream object.
+```c#
+// Desired: This method uses a strong return type
+public FileStream OpenFile() { ... }
 
+// Undesired: This method uses a weak return type
+public Stream OpenFile() { ... }
+```
 
-# Const-ness
+Here, the first method is preferred because the returned object can be either a FileStream object or as a Stream object. The second method requires that the caller treat the returned object as a Stream object. 
+
