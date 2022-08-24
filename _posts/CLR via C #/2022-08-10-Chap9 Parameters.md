@@ -11,13 +11,13 @@ tags:
     - CLR via C#
 ---
 
-# Optional and Named Parameters
+## Optional and Named Parameters
 
 Optional parameters means that when you define a method's parameters, you can assign default values to some parameters. Then, you can call this method without specifing these parameters.
 
 Named parameters means that when you call a method, you can specify arguments by using the name of their parameters.
 
-## Rules and Guidelines
+### Rules and Guidelines
 
 + Parameters with default values must come after any parameters that do not have default values. In other words, after you define a parameter as having a default value, then all parameters to the right of it must also have default values.
 
@@ -27,7 +27,7 @@ Named parameters means that when you call a method, you can specify arguments by
 
 In C#, when you give a parameter a default value, compiler internally assign the **OptionalAttribute** and **DefaultParameterValue** to the parameter, and this parameter is persisted in the metadata.
 
-# Implicitly Typed Local Variables
+## Implicitly Typed Local Variables
 
 C# support to infer the type of local variable from right expression, by using the **var** keyword.
 ```c#
@@ -70,7 +70,7 @@ Do not confuse *dynamic* and *var*. \
 The **var** keyword can be used only for declaring local variables inside a method, whereas the **dynamic** keyword can be used for local variables, fields, and arguments. \
 You must explicitly initialize a variable declared using **var**, whereas you do not have to initialize a variable de- clared with **dynamic**.
 
-# Passing Parameters by Reference to a Method
+## Passing Parameters by Reference to a Method
 
 When reference type objects are passed, the reference (or pointer) to the object is passed (by value) to the method. This means that the method can modify the object and the caller will see the change. 
 
@@ -84,7 +84,7 @@ Compiler treats the two keywords differently, if marked with out, the caller isn
 
 **Using out and ref with value types gives the same behavior that passing reference types by value.**
 
-# Passing a Variable Number of Arguments to a Method
+## Passing a Variable Number of Arguments to a Method
 
 Declare a method that accepts a variable number of arguments.
 ```c#
@@ -130,7 +130,7 @@ If we want the parameters could be any type, just takes an Object[] instead of I
 **Attention:** Be aware that calling a method that takes a variable number of arguments in- curs an additional performance hit unless you explicitly pass null. After all, an array object must be allocated on the heap. \
 To help reduce the performance hit, consider defining a few overloaded methods that do not use the params keyword.
 
-# Parameter and Return Type Guidelines
+## Parameter and Return Type Guidelines
 
 When declaring a method’s **parameter types**, you should **specify the weakest type** possible, preferring interfaces over base classes. For example, 
 ```c#

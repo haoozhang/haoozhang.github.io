@@ -11,7 +11,7 @@ tags:
     - CLR via C#
 ---
 
-# Constants
+## Constants
 
 Constant value never changes, so it is always considered to be **static member**, not instance member.
 
@@ -21,7 +21,7 @@ When code refers to a constant, compiler looks up the constant in metadata table
 **Attention:** If you want to refer a constant defined in another DLL assembly, when the constant changes and you only rebuild the DLL assembly, your application won't pick up new value of constant at runtime unless you re-compile it. \
 In this time, you should use **readonly** fields.
 
-# Fields
+## Fields
 
 CLR supports *readonly* fields and *read/write* fields. *readonly* fields can **be written to only within a constructor method**.
 

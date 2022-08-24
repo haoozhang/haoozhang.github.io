@@ -11,7 +11,7 @@ tags:
     - CLR via C#
 ---
 
-# Parameterless Properties
+## Parameterless Properties
 
 Many types define state information that can be retrieved or altered. Frequently, this state information is implemented as **fields** of the type. For example,
 ```c#
@@ -90,7 +90,7 @@ When defining a property, depending on its definition, the compiler will emit ei
 When C# compiler sees code that get or set
 a property, the compiler actually emits a call to one of these methods. In addition, compilers also emit a property definition entry into the managed assembly’s metadata for each property. This entry contains some flags and the type of the property, and it refers to the get and set accessor methods. Compilers and other tools can use this metadata, which can be obtained by using the **System.Reflection.PropertyInfo** class.
 
-## Automatically Implemented Properties
+### Automatically Implemented Properties
 
 If you are creating a property to simply encapsulate a backing field, then C# offers a simplified syntax known as **automatically implemented properties**. For example,
 ```c#
@@ -98,7 +98,7 @@ public String Name { get; set; }
 ```
 Compiler will automatically declare a private field with the type of property, implement the get_Name and set_Name methods.
 
-## Object and Collection Initializers
+### Object and Collection Initializers
 
 C# language supports a special object initialization syntax.
 ```c#
@@ -127,7 +127,7 @@ var table = new Dictionary<String, Int32> {
 };
 ```
 
-## Anonymous Types
+### Anonymous Types
 
 ```c#
 var o1 = new { Name = "Jeff", Year = 1964 };
@@ -168,7 +168,7 @@ Similarly, a method cannot return a reference to an anonymous type. Although the
 
 If you want to pass a tuple around, then you should consider using the **System.Tuple** type
 
-## System.Tuple Type
+### System.Tuple Type
 
 System namespace has several generic Tuple types that differ by the number of parameters.
 
@@ -187,7 +187,7 @@ private static void TupleTypes() {
 
 With anonymous types, the properties are given actual names. With Tuple types, the properties are assigned their Item# names by Microsoft and you cannot change it. This reduces code readability and maintainability so you should add comments to your code.
 
-# Parameterful Properties
+## Parameterful Properties
 
 **Parameterless Properties:** get accessor methods for the property accept no parameters.
 **Parameterful Properties:** get and set accessor methods accept parameters.
@@ -265,7 +265,7 @@ The compiler automatically generates names for these methods, they choose *Item*
 
 **System.Runtime.CompilerServices.IndexerNameAttribute** allows to change the default name. For example, the name of **String**’s indexer is *Chars* instead of *Item*.
 
-# About the Performance of Calling Property Accessor Methods
+## About the Performance of Calling Property Accessor Methods
 
 For simple get and set accessor methods, the just-in-time (JIT) compiler inlines the code, so that there’s no run-time performance hit.
 

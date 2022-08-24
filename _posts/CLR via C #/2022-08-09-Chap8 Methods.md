@@ -13,7 +13,7 @@ tags:
 
 This chapter focuses on the various kinds of methods, including instance constructor and type constructor, operator overload methods and type conversion, extension methods that allow you to add your own instance methods to existing types, and partial methods that spread a type's implementation into multiple parts.
 
-# Instance Constructor and Reference Types
+## Instance Constructor and Reference Types
 
 Instance constructors are specific methods that **initialize an instance of a type** to be initial state, are always called **.ctor** in method definition metadata table.
 
@@ -42,7 +42,7 @@ internal sealed class SomeType {
 }
 ```
 
-# Instance Constructor and Structures (Value Types)
+## Instance Constructor and Structures (Value Types)
 
 C# compiler doesn't emit default parameterless constructors for value types. The fields of the value types are initialized to 0/null.
 
@@ -64,7 +64,7 @@ In this code, due to complier will never call value type's default construtor, e
 
 C# doesn’t allow a value type to define a parameterless constructor.
 
-# Type Constructor
+## Type Constructor
 
 also known as *static constructor, class constructor, type intializer*.
 
@@ -95,7 +95,7 @@ Because that type constructor executes only once per App- Domain and is thread-s
 
 Type constructor is to **initialize static fields**. C# also offers the convenient syntax inline. Similarly, compiler automatically generates a type constructor to perform intialization.
 
-# Operator Overload Methods
+## Operator Overload Methods
 
 String, Decimal and DatetTime types overload the equlity (==) and inequality (!=) operators. 
 
@@ -108,7 +108,7 @@ public sealed class Complex {
 }
 ```
 
-# Conversion Operator Methods
+## Conversion Operator Methods
 
 Occasionally, we intend to convert an object from one type to another different type. If the source type and target type are all primitive types, compiler knows how to convert the object. \
 If the source type or target type is not a primitive, the compiler will let CLR to perform the conversion (cast). CLR just checks if the source type is same as target type, or derived from target type. \
@@ -128,7 +128,7 @@ public static explicit operator Int32(Rational r) {
 
 Recommend to learn about *System.Decimal* type to further understand operator overload methods and conversion operator methods.
 
-# Extension Methods
+## Extension Methods
 
 We use an example to understand C#'s extension methods. *StringBuilder* class is the preferred way of manipulating a string because it is mutable. So, let’s say that we would like to define some missing methods to operate on a StringBuilder, e.g., *IndexOf* method as follows.
 ```c#
@@ -185,13 +185,13 @@ public static void Main() {
 }
 ```
 
-## Rules and Guidelines
+### Rules and Guidelines
 
 + C# supports **extension methods only**, not extension properties / events / operators.
 + Extension methods must be declared in **non-generic, static classes**, must have **at least one parameter, and only the first parameter can be marked with *this* keyword**.
 + The static class that define extension methods **must have file scope**. In other words, you can't define extension methods in the static class nested within another class.
 
-# Partial Methods
+## Partial Methods
 
 If we customize methods in one class, Normally, customization would be done by invoking virtual methods. base class have to contain definitions for virtual methods, and this methods would be implemented is to do nothing and simply return. Then, we define own class, derive it from the base class, and override any virtual methods.
 ```c#
@@ -253,7 +253,7 @@ internal sealed partial class Base {
 
 **If there is no implementing partial method declaration, the compiler will not generate any metadata representing the partial method.** So, there is big improvement with partial methods. 
 
-## Rules and Guidelines
+### Rules and Guidelines
 
 + Partial methods can only be declared within a partial class or struct.
 + Partial methods must have a **return type of void**, and cannot have any parameters marked with *out* modifier.
