@@ -15,8 +15,8 @@ tags:
 
 In .NET framework, enumerated types are treated as **first-class citizens** in the type system, which is different from other environments (such as unmanaged c++).
 
-enumerated type is derived directly from **System.Enum**, which is derived from **System.ValueType**, which in turn is derived from **System.Object**. So enumerated types are **value types**. \
-However, unlike other value types, an enumerated type can’t define any methods, properties, or events. But you can use *extension method* feature to add methods.
+Enumerated type is derived directly from **System.Enum**, which is derived from **System.ValueType**, which in turn is derived from **System.Object**. So enumerated types are **value types**. \
+However, unlike other value types, an enumerated type **can’t define any methods, properties, or events**. But you can use *extension method* feature to add methods.
 
 When an enumerated type is compiled, the C# compiler turns each symbol into a **constant** field of the type.
 
@@ -51,8 +51,51 @@ Enumerated types are always used in conjunction with some other type. Typically,
 
 ## Bit Flags
 
+When you call **System.IO.File** type’s Get­ Attributes method, it returns an instance of a **FileAttributes** type. \
+**FileAttributes** type is an instance of an Int32-based enumerated type, in which each bit reflects a single attribute of the file.
 
+```c#
+[Flags, Serializable]
+public enum FileAttributes {
+    ReadOnly = 0x00001,
+    Hidden = 0x00002,
+    System = 0x00004,
+    Directory = 0x00010,
+    Archive = 0x00020,
+    Device = 0x04000,
+    Normal = 0x08000,
+    ...
+}
+```
+
+To determine whether a file is hidden, you would execute code like the following.
+
+```c#
+String file = Assembly.GetEntryAssembly().Location;
+FileAttributes attributes = File.GetAttributes(file);
+Console.WriteLine("Is {0} hidden? {1}", file, (attributes & FileAttributes.Hidden) != 0);
+```
 
 ## Adding Methods to Enumerated Types
 
+Use C#’s exten- sion method feature to simulate adding methods to an enumer- ated type.
+
+```c#
+internal static class FileAttributesExtensionMethods {
+    public static FileAttributes Set(this FileAttributes flags, FileAttributes setFlags) {
+            return flags | setFlags;
+    }
+
+    public static FileAttributes Clear(this FileAttributes flags,
+      FileAttributes clearFlags) {
+      return flags & ~clearFlags;
+    }
+}
+
+// here is some code that call these methods.
+FileAttributes fa = FileAttributes.System;
+fa = fa.Set(FileAttributes.ReadOnly);
+fa = fa.Clear(FileAttributes.System);
+fa.ForEach(f => Console.WriteLine(f));
+```
 
