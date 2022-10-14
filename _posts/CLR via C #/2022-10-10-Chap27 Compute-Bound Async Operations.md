@@ -2,7 +2,7 @@
 layout:     post
 title:      Chapter 27. Compute-Bound Asynchoronous Operations
 subtitle:   
-date:       2022-10-03
+date:       2022-10-10
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
