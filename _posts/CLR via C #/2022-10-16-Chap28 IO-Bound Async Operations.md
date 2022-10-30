@@ -16,28 +16,28 @@ The previous chapter focused on ways to perform compute-bound async operations, 
 ## How Windows Performs I/O Operations
 
 Let’s begin by discussing how Windows performs synchronous I/O operations. In your program, \
-1) you open a disk file by constructing a **FileStream** object. 
-2) you call the **Read** method to read data from the file. 
+1. you open a disk file by constructing a **FileStream** object. 
+2. you call the **Read** method to read data from the file. 
     + when calling **FileStream’s Read** method, thread transitions from managed code to native/user-mode code
     + **Read** internally calls the Win32 **ReadFile** function, **ReadFile** function allocates a small data structure called IO Request Packet (IRP).
     + **ReadFile** function transitions from native/user mode to native/kernel mode, and call Windows kernel, passing IRP to kernel.
     + based on the IRP, Windows kernel delivers the IRP to appropriate device driver.
     + the hardware device now performs the requested I/O operation.
     + **note that**: when the hardware is performing I/O request, your thread has nothing to do, so Windows puts your thread to sleep. But it still wastes memory (user-mode stack, kernel-mode stack, etc).
-3) The hardware device completes the I/O operation, and then Windows will wake up your thread, schedule it to a CPU, and let it return from kernel mode to user mode, and then back to managed code.
-4) **FileStream’s Read** method now returns an Int32, indicating the actual number of bytes read from the file.
+3. The hardware device completes the I/O operation, and then Windows will wake up your thread, schedule it to a CPU, and let it return from kernel mode to user mode, and then back to managed code.
+4. **FileStream’s Read** method now returns an Int32, indicating the actual number of bytes read from the file.
 
 Let’s imagine that you are implementing a web application. Each client request comes into your server, you need to make a database request. Then a thread pool thread will call into your code, if you call synchronously, the thread will block to wait for the response. As more and more client requests come in, more and more threads are created, and all these threads block waiting for the database to respond.
 
 Now, let’s discuss how Windows performs asynchronous I/O operations.
-1) open the disk file by constructing a **FileStream** object, passing **FileOptions.Asynchronous** flag.
-2) call **ReadAsync** (instead of Read) to allocate a **Task\<Int32>** object, which represents the read operation.
+1. open the disk file by constructing a **FileStream** object, passing **FileOptions.Asynchronous** flag.
+2. call **ReadAsync** (instead of Read) to allocate a **Task\<Int32>** object, which represents the read operation.
     + **ReadAsync** calls Win32’s **ReadFile** function.
     + **ReadFile** allocates its IRP.
     + **ReadFile** function passes IRP to kernel.
     + Windows adds the IRP to the hard disk driver.
     + **note that:**: now, instead of blocking your thread, your thread returns from its call to **ReadAsync**.
-3) after hardware completes processing the IRP, it will queue the completed IRP into the CLR’s thread pool. Sometimes in the future, a thread pool thread will extract the completed IRP and execute code to complete the task.
+3. after hardware completes processing the IRP, it will queue the completed IRP into the CLR’s thread pool. Sometimes in the future, a thread pool thread will extract the completed IRP and execute code to complete the task.
 
 Now, a client request comes in, and our server makes an asynchronous database request. Then our thread won't block, and it returns to the thread pool to handle more incoming client requests. So we have just one thread handling all incoming client requests. \
 When the database server responds, its response is also queued into the thread pool, so our thread pool thread will just process it at some point and ultimately send the necessary data back to the client. So we have just one thread processing all client requests and all database responses.
