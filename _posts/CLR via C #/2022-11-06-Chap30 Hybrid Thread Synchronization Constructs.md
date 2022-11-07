@@ -138,5 +138,140 @@ As you can see, adding extra behavior to the lock increases the number of fields
 
 ## Hybrid Constructs in FCL
 
+The FCL ships with many hybrid constructs that use fancy logic to keep your threads in user mode, improving your application’s performance. Some of these hybrid constructs also avoid creating the kernel-mode construct until the first time threads contend on the construct. If threads never contend on the construct, then your application avoids the performance hit of creating the object.
+
+### ManualResetEventSlim and SemaphoreSlim
+
+These two constructs work exactly like their kernel-mode constructs, except that both spinning in user mode, and they both defer creating the kernel-mode construct until the first time contention occurs.
+
+Their **Wait** methods allow to pass a **timeout** and a **CancellationToken**. Here is what these classes look like.
+```c#
+public class ManualResetEventSlim : IDisposable {
+    public ManualResetEventSlim(Boolean initialState, Int32 spinCount);
+    public void Dispose();
+    public void Reset();
+    public void Set();
+    public Boolean Wait(Int32 millisecondsTimeout, CancellationToken     cancellationToken);
+    public Boolean IsSet { get; }
+    public Int32 SpinCount { get; }
+    public WaitHandle WaitHandle { get; }
+}   
+
+public class SemaphoreSlim : IDisposable {
+    public SemaphoreSlim(Int32 initialCount, Int32 maxCount);
+    public void Dispose();
+    public Int32 Release(Int32 releaseCount);
+    public Boolean Wait(Int32 millisecondsTimeout, CancellationToken     cancellationToken);
+    // Special method for use with async and await (see Chapter 28)
+    public Task<Boolean> WaitAsync(Int32 millisecondsTimeout, CancellationToken cancellationToken);
+    public Int32 CurrentCount { get; }
+    public WaitHandle AvailableWaitHandle { get; }
+}
+```
+
+Although there is no **AutoRestEventSlim** class, we can construct a **SemaphoreSlim** object that **maxCount** is 1.
+
+### Monitor and Sync Blocks
+
+Every object on the heap can have a data structure, called a **sync block**. It maintains a kernel object, the owning thread’s ID, a recursion count, and a waiting threads count. 
+
+The **Monitor** class is a static class whose methods accept a reference to any heap object, and these methods manipulate the fields in the specified object’s sync block.
+
+Now obviously, associating a sync block data structure with every object in the heap is quite wasteful, because most objects’ sync blocks are never used. CLR team uses a more efficient way to offer: 
++ When the CLR initializes, it allocates an array of sync blocks in native heap.
++ When an object is constructed, the object’s sync block index is initialized to -1, which indicates that it doesn’t refer to any sync block.
++ when **Monitor.Enter** is called, the CLR finds a free sync block in the array and sets the object’s sync block index to refer to the sync block.
++ When **Exit** is called, it checks whether there are any more threads waiting to use the object’s sync block. If there are no threads waiting for it, the sync block is free, **Exit** sets the object’s sync block index back to -1.
+
+But there is a problem that each object's sync block index is implicitly public. So **Monitor.Enter** will get a public lock, which may cause thread blocked.
+
+it is so common for developers to take a lock, do some work, and then release the lock within a single method, the C# language offers simplified syntax via its **lock** keyword. 
+
+```c#
+private void SomeMethod() {
+    lock (this) {
+        // This code has exclusive access to the data...
+    }
+}
+```
+
+It's equivalent to having written the method like this.
+
+```c#
+private void SomeMethod() {
+    Boolean lockTaken = false;
+    try {
+        // An exception (such as ThreadAbortException) could occur here...
+        Monitor.Enter(this, ref lockTaken);
+        // This code has exclusive access to the data...
+    }
+    finally {
+        if (lockTaken) Monitor.Exit(this);
+    }
+}
+```
+
+If an exception occurs inside the **try** block while changing state, then the state is now corrupted. When the lock is exited in the finally block, another thread will now start manipulating the corrupted state. So the **Boolean lockTaken** variable is introduced. If **Monitor.Enter** is called and successfully takes the lock, it sets **lockTaken** to true. The finally block examines **lockTaken** to know whether to call **Monitor.Exit** or not.
+
+### ReaderWriterLockSlim
+
+If all the threads want to read-only the data, then there is no need to block them; they should all be able to access the data concurrently. On the other hand, if a thread wants to modify the data, then this thread needs exclusive access to the data. The  The **ReaderWriterLockSlim** construct solves this problem.
+
++ When one thread is writing to the data, all other threads requesting access are blocked.
++ When one thread is reading from the data, other threads requesting read access are allowed to continue executing, but threads requesting write access are blocked.
++ When a thread writing to the data has completed, either a single writer thread is unblocked or all the reader threads are unblocked. If no threads are blocked, then the lock is free and available for the next reader or writer thread that wants it.
++ When all threads reading from the data have completed, a single writer thread is unblocked so it can access the data. If no threads are blocked, then the lock is free and available for the next reader or writer thread that wants it.
+
+Here is some code that demonstrates the use of this construct.
+
+```c#
+internal sealed class Transaction : IDisposable {
+    private readonly ReaderWriterLockSlim m_lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+    private DateTime m_timeOfLastTrans;
+   
+    public void PerformTransaction() {
+        m_lock.EnterWriteLock();
+        // This code has exclusive access to the data...
+        m_timeOfLastTrans = DateTime.Now;
+        m_lock.ExitWriteLock();
+    }
+   
+    public DateTime LastTransaction {
+        get {
+            m_lock.EnterReadLock();
+            // This code has shared access to the data...
+            DateTime temp = m_timeOfLastTrans;
+            m_lock.ExitReadLock();
+            return temp;
+        } 
+    }
+    
+    public void Dispose() { m_lock.Dispose(); }
+}
+```
+
+**Reader­WriterLockSlim’s** constructor allows you to pass in a **LockRecursionPolicy** flag.
+
+```c#
+public enum LockRecursionPolicy { NoRecursion, SupportsRecursion }
+```
+
+If you pass the **SupportsRecursion** flag, then the lock will add thread ownership and recursion behaviors to the lock, which will cause performance hit. So **NoRecursion** is recommended.
+
+### CountdownEvent
+
+This construct blocks a thread until its internal counter reaches 0.
+
+### Barrier
+
+**Barrier** is used to control a set of threads that are working together
+in parallel so that they can step through phases of the algorithm together. 
++ When you construct a **Barrier**, you tell it how many threads are participating in the work, and you can also pass an **Action\<Barrier>** delegate referring to code that will be invoked whenever all participants complete a phase of the work.
++ As each thread completes its phase of the work, it should call **Signal­AndWait**, which tells the **Barrier** that the thread is done and the **Barrier** blocks the thread.
++ After all participants call **SignalAndWait**, the **Barrier** invokes the delegate and then unblocks all the waiting threads so they can begin the next phase.
+
+
+## Double-Check Locking 
+
 
 ## 
