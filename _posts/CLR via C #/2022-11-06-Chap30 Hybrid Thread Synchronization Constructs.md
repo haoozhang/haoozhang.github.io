@@ -273,5 +273,148 @@ in parallel so that they can step through phases of the algorithm together.
 
 ## Double-Check Locking 
 
+There is a famous technique called **double-check locking**, which is used to defer constructing a singleton object until an application requests it. If the application never requests the object, it never gets constructed. 
 
-## 
+CLR supports the double-check locking technique just fine. Here is code that demonstrates how to implement the double-check locking technique in C#.
+
+```c#
+internal sealed class Singleton {
+    private static readonly Object s_lock = new Object();
+
+    // This field will refer to the one Singleton object
+    private static Singleton s_value = null;
+    
+    // Private constructor prevents any code outside this class from creatingan instance
+    private Singleton() {
+       // Code to initialize the one Singleton object goes here...
+    }
+
+    // Public, static method that returns the Singleton object (creating it if necessary)
+    public static Singleton GetSingleton() {
+        // If the Singleton was already created, just return it (this is fast)
+        if (s_value != null) return s_value;
+        
+        Monitor.Enter(s_lock);  // Not created, let 1 thread create it
+        if (s_value == null) {
+            // Still not created, create it
+            Singleton temp = new Singleton();
+            // Save the reference in s_value (see discussion for details)
+            Volatile.Write(ref s_value, temp);
+        }
+        Monitor.Exit(s_lock);
+      
+        // Return a reference to the one Singleton object
+        return s_value;
+    }
+}
+```
+
+The **GetSingleton** method quickly checks the **s_value** field to see if the object has already been created, and if it has, the method returns a reference to it. 
+If the first thread that calls the **GetSingleton** method sees that the object hasn’t been created, it takes a thread synchronization lock to ensure that only one thread constructs the single object.
+
+Inside **GetSingleton**, you see the call to **Volatile.Write**. Let's say that you just write the following code in the **if** statement.
+```c#
+s_value = new Singleton(); 
+```
+You would expect the compiler to produce code that allocates the memory for a **Singleton**, calls the constructor to initialize the fields, and then assigns the reference into the **s_value** field. But the compiler may allocate memory for the **Singleton**, publish (assign) the reference into s_value, and then call the constructor. Now, what if another thread call the **GetSingleton** method? it will see that s_value is not null and start to use this **Singleton** object, but its constructor has not executing yet.
+
+So **Volatile.Write** fixes this problem. It ensures that the reference is assigned to **s_value** only after **temp** is constructed.
+
+In most scenarios, the double-checking locking technique actually hurts efficiency. Here is a much simpler version of the **Singleton** class.
+
+```c#
+internal sealed class Singleton {
+    private static Singleton s_value = new Singleton();
+
+    // Private constructor prevents any code outside this class from creating an instance
+    private Singleton() {
+       // Code to initialize the one Singleton object goes here...
+    }
+
+    // Public, static method that returns the Singleton object (creating it if necessary)
+    public static Singleton GetSingleton() { return s_value; }
+}
+```
+
+When first time to access the class, CLR will call class's constructor to create an instance of the **Singleton**. And CLR already ensures that calls to a class constructor are thread safe. This approach has a problem that the **s_value** will be constructed as long as this class is accessed, not lazy initialization.
+
+Let me show you a third way of producing a single Singleton object.
+
+```c#
+internal sealed class Singleton {
+    private static Singleton s_value = null;
+    // Private constructor prevents any code outside this class from creating an instance
+    private Singleton() {
+        // Code to initialize the one Singleton object goes here...
+    }
+   
+    // Public, static method that returns the Singleton object (creating it if necessary)
+    public static Singleton GetSingleton() {
+        if (s_value != null) return s_value;
+        
+        // Create a new Singleton and root it if another thread didn't do it first
+        Singleton temp = new Singleton();
+        Interlocked.CompareExchange(ref s_value, temp, null);
+        
+        // If this thread lost, then the second Singleton object gets GC'd
+        return s_value; // Return reference to the single object
+   }
+}
+```
+
+If multiple threads call **GetSingleton** simultaneously, then this version might create two (or more) Singleton objects. However, the call to **Interlocked.CompareExchange** ensures that only one of the references is ever published into the **s_value** field. Other objects will be garbage collected later.
+
+## Condition Variable Pattern
+
+Let’s say that a thread wants to execute some code when a complex condition is true. One option would be to let the thread spin continuously. But this wastes CPU time. There is a pattern that allows threads to efficiently synchronize their operations based on a complex condition.
+
+This pattern is called the condition variable pattern, and we use it via the following methods defined inside the Monitor class.
+
+```c#
+public static class Monitor {
+    public static Boolean Wait(Object obj);
+    public static Boolean Wait(Object obj, Int32 millisecondsTimeout);
+    public static void Pulse(Object obj);
+    public static void PulseAll(Object obj);
+}
+```
+
+Here is what the pattern looks like.
+```c#
+internal sealed class ConditionVariablePattern {
+    private readonly Object m_lock = new Object();
+   
+    private Boolean m_condition = false;
+    
+    public void Thread1() {
+        Monitor.Enter(m_lock);        // Acquire a mutual­exclusive lock
+        // While under the lock, test the complex condition "atomically"
+        while (!m_condition) {
+            // If condition is not met, wait for another thread to change the condition
+            Monitor.Wait(m_lock);      // Temporarily release lock so other threads can get it
+        }
+      
+        // The condition was met, process the data...
+        Monitor.Exit(m_lock);         // Permanently release lock
+    }
+   
+    public void Thread2() {
+        Monitor.Enter(m_lock);        // Acquire a mutual­exclusive lock
+        
+        // Process data and modify the condition...
+        m_condition = true;
+
+        // Monitor.Pulse(m_lock);  // Wakes one waiter AFTER lock is released
+        Monitor.PulseAll(m_lock);  // Wakes all waiters AFTER lock is released
+
+        Monitor.Exit(m_lock);      // Release lock
+    }
+}
+```
+
+## Asynchronous Synchronization
+
+
+
+
+## Concurrent Collection Class
