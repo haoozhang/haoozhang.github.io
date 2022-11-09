@@ -412,9 +412,17 @@ internal sealed class ConditionVariablePattern {
 }
 ```
 
-## Asynchronous Synchronization
-
-
-
-
 ## Concurrent Collection Class
+
+The FCL ships with four thread-safe collection classes: 
++ ConcurrentQueue
++ ConcurrentStack
++ ConcurrentDictionary
++ ConcurrentBag
+
+All these collection classes are non-blocking. That is, if a thread tries to extract an element when no such element exists, the thread returns immediately; the thread does not block waiting for an element to appear.
+
+The **ConcurrentDictionary** class uses Monitor internally, but the lock is held for a very short time while manipulating the item. \
+**ConcurrentQueue** and **ConcurrentStack** are lock-free; these both internally use **Inter­locked** methods to manipulate the collection. \
+A single **ConcurrentBag** object internally consists of a mini-collection object per thread. When a thread adds an item to the bag, **Interlocked** methods are used to add the item to the calling thread’s mini-collection. When a thread tries to extract an element from the bag, the bag checks the calling thread’s mini-collection for the item. If the item is there, then an **Interlocked** method is used to extract the item. If the thread’s mini-collection doesn’t have, then a **Monitor** is taken internally to extract an item from another thread’s mini-collection.
+
