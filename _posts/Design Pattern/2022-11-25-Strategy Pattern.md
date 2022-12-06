@@ -17,13 +17,19 @@ The **Strategy Pattern** defines a family of algorithms (interfaces), encapsulat
 
 ### Motivation
 
-Using *inheritance* can't solve the problem very well, because some subclasses should not implement all methods defined in base class, e.g., fake duck is duck, but it can't fly, so it should not have the fly behavior defined in base class. 
+Let's say that we have different kinds of ducks (redhead duck, mallard duck, fake duck), and they need to customize fly behavior and quack behavior. The intuitive solution is to let different kinds of ducks extend and override the base duck class, where contains fly and quack behaviors.
 
-Using *interface* also can't works well, because no code reuse, i.e., for every implementation change, we have to change all involving sub classes.
+However, using *inheritance* can't solve the problem very well, because some sub-classes should not implement all methods defined in base class, e.g., fake duck is a kind of duck, but it can't fly, so it should not override the fly behavior defined in base class. 
+
+Then we may think out the solution using interface, that is, let those ducks implement the fly and quack interface to customize their behavior. For fake duck, it doesn't implement fly behavior due to that's not applicable.
+
+But using *interface* also can't works well, because no code reuse, i.e., for every potenial implementation change later, we have to change all involving sub-classes.
 
 ### Applicability
 
-A behavior has many implementations, and we only need one implementation to configure our client.  Also, we may need to change the implementation later.
+When you want to use different variants of an algorithm within an object and be able to switch from one algorithm to another during runtime.
+
+When you have a lot of similar classes that only differ in the way they execute some behavior.
 
 ### Structure
 
@@ -31,14 +37,18 @@ A behavior has many implementations, and we only need one implementation to conf
 
 ### Participants
 
-Duck is the base class, and all xxDuck are subclasses, which act as client role.
+**Duck** is the base class, and all **xxDuck** are sub-classes, which act as client role.
 Encapsulated fly/quack behavior are two family of algorithms, they have multiple inter-changeable implementations for each interface.
 
-For clients, they interact with interface type (FlyBehavior/QuackBehavior), so those implementations are transparent for client side.
+For clients, they interact with interface type (**FlyBehavior**/**QuackBehavior**), so those implementations are transparent for client side.
 
 ### Consequence
 
-Separated the changing part from non-changing part. Now, the subclass can reference the specific implemntation on demand, e.g., *FakeDuck* reference the *FlyNoWay*. Also, if certain behavior needs to be updated, we only change the implementation at one place.
+Separate the changing part from non-changing part. Now, the subclass can reference the specific behavior on demand, e.g., **FakeDuck** reference the **FlyNoWay**. 
+
+**Open closed principle**. if we want to add new strategy or certain strategy needs to be updated, we just change the implementation at only one place.
+
+Isolate the implementation details of an algorithm from the code that uses it. Redhead duck don't have to know how the fly behavior implements.
 
 ### Implementation
 
