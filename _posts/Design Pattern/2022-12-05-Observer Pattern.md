@@ -21,7 +21,9 @@ Imagine that you have two types of objects: a **Customer** and a **Store**. The 
 
 The customer could visit the store every day and check product availability. But it will cost their time very much. On the other hand, the store could send the notification to all consumers when the iPhone 14 comes, but it will disturb the consumers who are not interested.
 
-Now, we need the observer pattern. The consumers who interested the particular brand of product can subscribe it, instead of querying it every day. The store will notify only those subscribed consumers (not all) when the product comes.
+![img](/img/DesignPattern/observer_motivation.png)
+
+Now in this case, we need the observer pattern. The consumers who interested the particular brand of product can subscribe it, instead of querying it every day. Then the store will notify only those subscribed consumers (not all) when the product comes.
 
 ### Applicability
 
@@ -39,11 +41,13 @@ When changes to the state of one object may require changing other objects.
 
 ### Consequence
 
-Decouple subject with observers. You can introduce new observer without having to change the subject (and vice versa).
+Decoupled the subject with observers. You can introduce new observer without having to change the subject (and vice versa).
 
-Note that the observers are notified in random order.
+Note that here the observers are notified in random order.
 
 ### Implementation
+
+Here we take the weather station as an example. Once the weather data produced, the different dashboards will be notified and updated.
 
 ```c#
 public interface ISubject
@@ -138,7 +142,12 @@ See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/Wea
 
 ### Known Uses
 
+Java has built-in support for observer pattern with **Observable** and **Observer**.
++ For an Object to become an observer. As usual, implement the **Observer** interface, and call add/remove observer methods.
++ For the **Observable** to send notifications. There it is a two-step process: first must call the *setChanged()* method to signify that the state has changed, then call *notifyObservers()* or *notifyObservers(Object arg)* method.
++ For an Observer to receive notifications. If you want to "push" data to the observers, you can pass the data as a data object to the *notifyObservers(arg)* method. Else, you call *notifyObservers()* method and the Observer has to "pull" data from Observable object via calling some getter methods.
 
+both JavaBeans and Swing also provide their own implementations of the pattern, e.g., **PropertyChangeListener** interface in JavaBeans.
 
 ### Related Patterns
 

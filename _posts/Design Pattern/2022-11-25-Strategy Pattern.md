@@ -17,11 +17,15 @@ The **Strategy Pattern** defines a family of algorithms (interfaces), encapsulat
 
 ### Motivation
 
-Let's say that we have different kinds of ducks (redhead duck, mallard duck, fake duck), and they need to customize fly behavior and quack behavior. The intuitive solution is to let different kinds of ducks extend and override the base duck class, where contains fly and quack behaviors.
+Let's say that we have different kinds of ducks (redhead duck, mallard duck, fake duck and etc), and they have fly behavior and quack behavior. The intuitive solution is to let different kinds of ducks extend and override the base duck class, where contains fly and quack behaviors, just like this.
+
+![img](/img/DesignPattern/strategy_inheritance.png)
 
 However, using *inheritance* can't solve the problem very well, because some sub-classes should not implement all methods defined in base class, e.g., fake duck is a kind of duck, but it can't fly, so it should not override the fly behavior defined in base class. 
 
 Then we may think out the solution using interface, that is, let those ducks implement the fly and quack interface to customize their behavior. For fake duck, it doesn't implement fly behavior due to that's not applicable.
+
+![img](/img/DesignPattern/strategy_interface.png)
 
 But using *interface* also can't works well, because no code reuse, i.e., for every potenial implementation change later, we have to change all involving sub-classes.
 
