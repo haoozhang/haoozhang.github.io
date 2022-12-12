@@ -31,7 +31,7 @@ When a class should have just a single instance available to all clients; for ex
 
 ### Participants
 
-All implementations of the singleton have these two steps in common:
+All implementations of the singleton have these steps in common:
 + Define a static filed, which saves the singleton instance.
 + Make the default constructor as **private**, to prevent other objects from using the **new** operator to construct instance.
 + Create a static creation method that acts as a constructor, where this method calls the private constructor to create an object and saves it in the above static field. All following calls to this method return the cached object.
@@ -48,29 +48,29 @@ The first implementation shows as follows. It uses early-init way to initialize 
 
 ```c#
 // initialize static variable when initializing the class
-private static readonly SingletonEarlyInit Singleton = new SingletonEarlyInit();
+private static readonly Singleton Singleton = new Singleton();
 
-private SingletonEarlyInit() { }
+private Singleton() { }
 
-public SingletonEarlyInit GetSingleton()
+public Singleton GetSingleton()
 {
     // return directly
     return Singleton;
 }
 ```
 
-So we introduced the second implementation, which uses lazy-init way. The instance won't be constructed until it is accessed for the first time. But it has the drawback that the **synchronized** keyword works well for the first time access, but any following calls to this method don't have to be **synchronized** and will hurt the performance.
+So we introduced the second implementation, which uses lazy-init way. The instance won't be constructed until it is accessed for the first time. But it has the drawback that the **synchronized** keyword works well for the first time access, but all following calls to this method don't have to be **synchronized** and it will hurt the performance.
 
 ```java
-private static SingletonLazyInit Singleton;
+private static Singleton Singleton;
 
-private SingletonLazyInit() { }
+private Singleton() { }
 
-public static synchronized SingletonLazyInit GetSingleton()
+public static synchronized Singleton GetSingleton()
 {
     if (Singleton == null)
     {
-        Singleton = new SingletonLazyInit();
+        Singleton = new Singleton();
     }        
     return Singleton;
 }
@@ -80,22 +80,22 @@ To improve the performance in multiple threads environment, we introduce the **d
 
 ```java
 // volatile keyword ensures that the Singleton variable can be constructed completely.
-// JVM first allocate the memory for Singleton variable, then init the instance using construcor, then assign the reference to Singleton.
-// But in rare case, JVM counld first assign the reference then initialize the instance. So at this time, other threads may get the incomplete instance.
-private volatile static SingletonLazyInit Singleton;
+// JVM first allocate the memory for Singleton variable, init the instance using construcor, and assign the reference to Singleton.
+// But in actual rare case, JVM counld assign the reference before initializing the instance. So at this time, other threads may get the incomplete instance.
+private volatile static Singleton Singleton;
 
-private SingletonLazyInit() { }
+private Singleton() { }
 
-public static SingletonLazyInit GetSingleton()
+public static Singleton GetSingleton()
 {
     if (Singleton == null)
     {
-        // multiple threads acquire this lock, the one acuired will create singleton instance
-        synchronized (SingletonLazyInit.class)
+        // multiple threads acquire this lock, the one acquired will create singleton instance
+        synchronized (Singleton.class)
         {
             if (Singleton == null) 
             {
-                Singleton = new SingletonLazyInit();
+                Singleton = new Singleton();
             }
         }
     }        
