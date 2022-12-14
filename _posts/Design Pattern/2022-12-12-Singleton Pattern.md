@@ -11,15 +11,15 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Singleton Pattern** ensures a class has only one instance, and provides a global point of access to it.
-
 ### Motivation
 
 There are many objects that we need only one: thread pool, recycle bin, task manager and etc. In fact, for many of these types of objects, if we were to initialize more than one instance we’d run into all sorts of problems.
 
 A global variable can solve this problem, but it has some drawbacks. For example, if we assign on object to a global variable, then the object will be created when application starts up. But if we don't use it in whole lifetime and this object occupies much resources, these resources will be wasted.
+
+### Definition
+
+The **Singleton Pattern** ensures a class has only one instance, and provides a global point of access to it.
 
 ### Applicability
 
@@ -126,7 +126,7 @@ public static Singleton GetSingleton() {
 }
 ```
 
-And we can also use the **Interlocked** to implement as follows. Even if multiple threads can construct the more than one **temp** variable, only one can be assigned to **Singleton** variable.
+And we can also use the **Interlocked** to implement as follows. Even if multiple threads can construct more than one **temp** variable, the **Interlocked** allows only one can be assigned to **Singleton** variable.
 
 ```c#
 private static SingletonLazyInit Singleton;

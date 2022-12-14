@@ -11,10 +11,6 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Observer Pattern** defines a *one-to-many* dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.
-
 ### Motivation
 
 Imagine that you have two types of objects: a **Customer** and a **Store**. The customer is very interested in a particular brand of product (say, iPhone 14), which should become available in the store very soon.
@@ -24,6 +20,10 @@ The customer could visit the store every day and check product availability. But
 ![img](/img/DesignPattern/observer_motivation.png)
 
 Now in this case, we need the observer pattern. The consumers who interested the particular brand of product can subscribe it, instead of querying it every day. Then the store will notify only those subscribed consumers (not all) when the product comes.
+
+### Definition
+
+The **Observer Pattern** defines a *one-to-many* dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.
 
 ### Applicability
 
@@ -35,7 +35,9 @@ When changes to the state of one object may require changing other objects.
 
 ### Participants
 
-**Subject** is an interface, it has only three methods: register/remove/notify observer. **ConcreteSubject** is the implementation of **Subject** interface. In addition to the three methods, it has many observers and methods for getting or setting state, so that it can notify observers when state reaches certain threshold.
+**Subject** is an interface, it has only three methods: register/remove/notify observer.
+
+**ConcreteSubject** is the implementation of **Subject** interface. In addition to the three methods, it has many observers and methods for getting or setting state, so that it can notify observers when state reaches certain threshold.
 
 **Observer** is also an interface, it has only one method: update. **ConcreteObject** is the implementation, which is the specific observer. It customize own logic in update method.
 
@@ -144,8 +146,8 @@ See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/Wea
 
 Java has built-in support for observer pattern with **Observable** and **Observer**.
 + For an Object to become an observer. As usual, implement the **Observer** interface, and call add/remove observer methods.
-+ For the **Observable** to send notifications. There it is a two-step process: first must call the *setChanged()* method to signify that the state has changed, then call *notifyObservers()* or *notifyObservers(Object arg)* method.
-+ For an Observer to receive notifications. If you want to "push" data to the observers, you can pass the data as a data object to the *notifyObservers(arg)* method. Else, you call *notifyObservers()* method and the Observer has to "pull" data from Observable object via calling some getter methods.
++ For the **Observable** to send notifications. There it is a two-step process: first call the *setChanged()* method to signify that the state has changed, then call *notifyObservers()* or *notifyObservers(Object arg)* method.
++ For an Observer to receive notifications. If you want to "push" data to the observers, you can pass the data as a data object to the *notifyObservers(arg)* method. Else, you call *notifyObservers()* method and the Observer has to "pull" data from **Observable** object via calling some getter methods.
 
 both JavaBeans and Swing also provide their own implementations of the pattern, e.g., **PropertyChangeListener** interface in JavaBeans.
 

@@ -11,10 +11,6 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Factory Method Pattern** defines an interface for creating an object in super class, but lets subclasses decide which class to instantiate. **Factory Method** lets a class defer instantiation to subclasses.
-
 ### Motivation
 
 Imagine that you have two pizza stores, you want them sale different styles of pizza based on their location (New York, Chicago), while you want the same producing process (to ensure the quality of product). So you may implement it like this.
@@ -22,6 +18,10 @@ Imagine that you have two pizza stores, you want them sale different styles of p
 ![img](/img/DesignPattern/factory_motivation.png)
 
 This design doesn't meet the open closed principle. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
+
+### Definition
+
+The **Factory Method Pattern** defines an interface for creating an object in super class, but lets subclasses decide which class to instantiate. **Factory Method** lets a class defer instantiation to subclasses.
 
 ### Applicability
 
@@ -124,7 +124,7 @@ public class ChicagoStyleCheesePizza : Pizza
 }
 ```
 
-Further more, if we add a ingredient factory to create different ingredients, we will introduce the **abstract factory**, which lets a family of classes defer instantiation to subclasses. The result just look like.
+Further more, if we add a ingredient factory to create different ingredients, we will introduce the **Abstract Factory Pattern**, which lets a family of classes defer instantiation to subclasses. The result just look like.
 
 ![img](/img/DesignPattern/factory_abstract_consequence.png)
 

@@ -11,26 +11,18 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Adapter Pattern** converts the interface of a class into another interface the clients expect. Adapter lets classes that have incompatible interfaces work together.
-
 ![img](/img/DesignPattern/adapter_motivation.png)
 
 ### Motivation
 
-Remember our ducks mentioned in strategy pattern? Duck has **Fly** and **Quack** behaviors.
+Remember our ducks mentioned in strategy pattern? Duck has **Fly** and **Quack** behaviors. Here is a subclass of Duck, the MallardDuck.
 ```c#
 public interface Duck 
 {
     public void Quack();
     public void Fly();
 }
-```
 
-Here is a subclass of Duck, the MallardDuck.
-
-```c#
 public class MallardDuck : Duck
 {
     public void Fly()
@@ -53,6 +45,10 @@ public interface ITurkey
 }
 ```
 
+### Definition
+
+The **Adapter Pattern** converts the interface of a class into another interface the clients expect. Adapter lets classes that have incompatible interfaces work together.
+
 ### Applicability
 
 When you want to use some existing class, but its interface isn’t compatible with the rest of your code. The adapter pattern lets you create a middle-layer class that serves as a translator between your code and a legacy class.
@@ -67,9 +63,9 @@ In some languages that support multiple inheritance, we can also use following i
 
 ### Participants
 
-In first structure, the adapter class must implement the target interface, and reference to the adaptee object. 
+In the first structure, the adapter class must implement the target interface, and reference to the adaptee object. 
 
-In second implementation, the adapter class is the subclass of the target interface and adaptee.
+In the second implementation, the adapter class is the subclass of the target interface and adaptee.
 
 ### Consequence
 
@@ -105,12 +101,6 @@ public class TurkeyAdapter : IDuck
 ```
 
 See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/AdapterPattern) for complete code sample.
-
-### Facade Pattern
-
-The **Facade Pattern** provides a unified interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.
-
-![img](/img/DesignPattern/facade.png)
 
 ### Known Uses
 
