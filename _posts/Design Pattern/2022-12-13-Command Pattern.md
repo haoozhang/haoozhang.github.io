@@ -188,8 +188,10 @@ See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/Com
 
 ### Known Uses
 
-+ **Message Queue**: Commands give us a way to package a piece of computation (a receiver and a set of actions) and pass it as a first-class object. Then it may be invoked long after, even be invoked by a different thread. We can take this scenario and apply it to many useful applications such as schedulers, thread pools, and job queues. \
-Imagine a job queue: you add commands to the queue on one end, and on the other end sits a group of threads. Threads run the following script: they remove a command from the queue, call its execute() method, wait for the call to finish, then discard the command object and retrieve a new one.
+Message Queue
+
+Commands give us a way to package a piece of computation (a receiver and a set of actions) and pass it as a first-class object. Then it may be invoked long after, even be invoked by a different thread. We can take this scenario and apply it to many useful applications such as schedulers, thread pools, and job queues. \
+Imagine a job queue: you add commands to the queue on one end, and on the other end sits a group of threads. Threads run the following script: they remove a command from the queue, call its *execute()* method, wait for the call to finish, then discard the command object and retrieve a new one.
 
 ### Related Patterns
 

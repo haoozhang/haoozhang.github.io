@@ -11,13 +11,6 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Factory Method Pattern** defines an interface for creating an object in super class, but lets subclasses decide which class to instantiate. **Factory Method** lets a class defer instantiation to subclasses.
-
-The **Abstract Factory Pattern** provides an interface for creating families of related or
-dependent objects without specifying their concrete classes.
-
 ### Motivation
 
 Imagine that you have two pizza stores, you want them sale different styles of pizza based on their location (New York, Chicago), while you want the same producing process (to ensure the quality of product). So you may implement it like this.
@@ -26,27 +19,23 @@ Imagine that you have two pizza stores, you want them sale different styles of p
 
 This design doesn't meet the open closed principle. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
 
+### Definition
+
+The **Factory Method Pattern** defines an interface for creating an object in super class, but lets subclasses decide which class to instantiate. **Factory Method** lets a class defer instantiation to subclasses.
+
 ### Applicability
 
 When you don't need to know the exact types, and just need an object to work with the rest of procedures.
 
 ### Structure
 
-for **factory method** pattern,
-
 ![img](/img/DesignPattern/factory.png)
-
-for **abstract factory** pattern,
-
-![img](/img/DesignPattern/factory_abstract.png)
 
 ### Participants
 
 **Creator** is the factory, where the return type of the **factoryMethod** is the abstract **Product** type, not **ConcreteProduct**.
 
 **ConcreteCreator** is the specific subclass that is responsible for creating specific type of product.
-
-Similarly, the difference between these two patterns is that the abstract factory defines a family of classes to be initialized by subclasses.
 
 ### Consequence
 
@@ -135,11 +124,19 @@ public class ChicagoStyleCheesePizza : Pizza
 }
 ```
 
-Further more, if we add a ingredient factory to create different ingredients, we will introduce the **abstract factory**, which lets a family of classes defer instantiation to subclasses. The result just look like.
+Further more, if we add a ingredient factory to create different ingredients, we will introduce the **Abstract Factory Pattern**, which lets a family of classes defer instantiation to subclasses. The result just look like.
 
 ![img](/img/DesignPattern/factory_abstract_consequence.png)
 
 See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/PizzaFactory) for complete code sample.
+
+### Abstract Factory
+
+The **Abstract Factory Pattern** provides an interface for creating families of related or dependent objects without specifying their concrete classes.
+
+The only difference between these two patterns is that the abstract factory defines a family of classes to be initialized by subclasses.
+
+![img](/img/DesignPattern/factory_abstract.png)
 
 ### Known Uses
 

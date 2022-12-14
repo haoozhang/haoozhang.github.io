@@ -11,11 +11,6 @@ tags:
     - Design Pattern
 ---
 
-### Definition
-
-The **Decorator Pattern** attaches additional responsibilities to an object dynamically.
-Decorators provide a more flexible alternative than sub-classes for extending functionality.
-
 ### Motivation
 
 Imagine that you design an order system for the coffee shop. They provide several kinds of coffee for sales, also you can ask for several condiments like milk, soy, and mocha. The order system charges a bit for each of these. Here is your first attempt.
@@ -23,15 +18,20 @@ Imagine that you design an order system for the coffee shop. They provide severa
 ![img](/img/DesignPattern/decorator_motivation_1.png)
 
 This design has too many similar classes, which causes many problems. \
-First, we can't add a new brand of beverage conveniently. Once a new beverage added, we need to add all kinds of sub-class associated with condiments. \
+First, we can't add a new brand of beverage conveniently (lack of extendability). Once a new beverage added, we need to add all kinds of subclassed associated with condiments. \
 Second, we can't update the existing classes quickly. Suppose that we need update the price of certain beverage or condiment, we need to update all involving classes. 
 
 Why we need all these classes? Can we use inheritance to describe each kind of condiment? 
 
 ![img](/img/DesignPattern/decorator_motivation_2.png)
 
-This design has an impact on the **Open/Closed Design Principle**: open for extension, and closed for modification. The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
+This design has an impact on the **Open Closed Design Principle** (open for extension, and closed for modification). The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
 Besides, what if the customer want to buy a cup of coffee with double milk?
+
+### Definition
+
+The **Decorator Pattern** attaches additional responsibilities to an object dynamically.
+Decorators provide a more flexible alternative than subclasses for extending functionality.
 
 ### Applicability
 
