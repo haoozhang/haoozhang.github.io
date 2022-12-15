@@ -191,7 +191,7 @@ public class Tea : CaffeineBeverage
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/TemplatePattern) for complete code sample.
+See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/TemplateMethodPattern) for complete code sample.
 
 ### Known Uses
 
