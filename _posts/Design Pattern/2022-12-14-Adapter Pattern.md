@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Adapter Pattern and Facade Pattern
+title:      Adapter Pattern
 subtitle:   
 date:       2022-12-14
 author:     Hao
