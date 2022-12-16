@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      Composition Pattern
+title:      Proxy Pattern
 subtitle:   
-date:       2022-12-16
+date:       2022-12-18
 author:     Hao
 header-img: img/post/post_bg_coffee.jpg
 catalog: true
