@@ -17,7 +17,7 @@ Imagine that you have two pizza stores, you want them sale different styles of p
 
 ![img](/img/DesignPattern/factory_motivation.png)
 
-This design doesn't meet the open closed principle. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
+This design doesn't meet the **Open/Closed Principle**. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
 
 ### Definition
 

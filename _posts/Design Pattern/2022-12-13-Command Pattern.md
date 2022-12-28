@@ -33,7 +33,7 @@ When you want to queue operations, schedule their execution, or execute them rem
 
 ### Participants
 
-The **Invoker** must have a field for storing a reference to a command object. It triggers that command instead of sending the request directly to the receiver. Note that the sender isn’t responsible for creating the command object. Usually, it gets a pre-created command from the client.
+The **Invoker** must have a field for storing a reference to a command object. It triggers that command instead of sending the request directly to the receiver. Note that the invoker isn’t responsible for creating the command object. Usually, it gets a pre-created command from the client.
 
 The **Command** interface usually declares just a single method for executing the command.
 

@@ -13,29 +13,29 @@ tags:
 
 ### Motivation
 
-Imagine that you design an order system for the coffee shop. They provide several kinds of coffee for sales, also you can ask for several condiments like milk, soy, and mocha. The order system charges a bit for each of these. Here is your first attempt.
+Imagine that you design an order system for the coffee shop. They provide several kinds of coffee for sales, also the customer can ask for several condiments like milk, soy, and mocha. The order system charges a bit for each of these. Maybe here is your first attempt.
 
 ![img](/img/DesignPattern/decorator_motivation_1.png)
 
 This design has too many similar classes, which causes many problems. \
-First, we can't add a new brand of beverage conveniently (lack of extendability). Once a new beverage added, we need to add all kinds of subclassed associated with condiments. \
-Second, we can't update the existing classes quickly. Suppose that we need update the price of certain beverage or condiment, we need to update all involving classes. 
+First, we can't add a new brand of beverage conveniently (lack of extendability). Once a new beverage needs to be added, we have to add all kinds of subclasses associated with condiments. \
+Second, we can't update the existing classes quickly. Suppose that we need to update the price of certain beverage or condiment, we need to update all involving classes. 
 
-Why we need all these classes? Can we use inheritance to describe each kind of condiment? 
+Why we need all these classes? Can we use inheritance to define beverage and use some bool methods to describe each kind of condiment? just like this.
 
 ![img](/img/DesignPattern/decorator_motivation_2.png)
 
-This design has an impact on the **Open Closed Design Principle** (open for extension, and closed for modification). The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
-Besides, what if the customer want to buy a cup of coffee with double milk?
+The drawback of this design is that it's not align with the **Open/Closed Design Principle** (open for extension, and closed for modification). The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
+Besides, what if the customer want to buy a cup of coffee with double milk? It can't be achieved conveniently for current design.
 
 ### Definition
 
-The **Decorator Pattern** attaches additional responsibilities to an object dynamically.
+The **Decorator Pattern** attaches **additional responsibilities to an object** dynamically.
 Decorators provide a more flexible alternative than subclasses for extending functionality.
 
 ### Applicability
 
-When you need to be able to assign extra behaviors to objects at runtime without breaking the code that uses these objects.
+When you need to be able to **assign extra behaviors to objects** at runtime without breaking the code that uses these objects.
 
 ### Structure
 
@@ -43,9 +43,11 @@ When you need to be able to assign extra behaviors to objects at runtime without
 
 ### Participants
 
-+ **ConcreteComponent** and **Decorator** have the same super type **Component**.
-+ You can use one or more decorators to wrap an object.
-+ The decorator adds its own behavior either before and/or after decorated component's behavior to do the rest of the job.
+**ConcreteComponent** and **Decorator** have the same super type **Component**.
+
+You can use one or more decorators to wrap an object.
+
+The decorator adds its own behavior either before or after decorated component's behavior to do the rest of the job.
 
 ### Consequence
 
@@ -120,7 +122,7 @@ public class Mocha : ICondimentDecorator
 }
 ```
 
-Use the following code to test it.
+Then, use the following code to test it.
 
 ```c#
 IBeverage beverage = new Tea();
@@ -136,7 +138,7 @@ See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/Sta
 
 ### Known Uses
 
-Decorating in Java I/O
+Decorating implementation in Java I/O.
 
 ![img](/img/DesignPattern/decorator_knownuse.png)
 
