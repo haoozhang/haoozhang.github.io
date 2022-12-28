@@ -15,7 +15,7 @@ tags:
 
 ### Motivation
 
-Remember our ducks mentioned in strategy pattern? Duck has **Fly** and **Quack** behaviors. Here is a subclass of Duck, the MallardDuck.
+Remember our ducks mentioned in Strategy Pattern? Duck has **Fly** and **Quack** behaviors. Here is a subclass of Duck, the MallardDuck.
 ```c#
 public interface Duck 
 {
