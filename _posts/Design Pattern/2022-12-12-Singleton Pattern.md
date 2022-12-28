@@ -81,7 +81,7 @@ To improve the performance in multiple threads environment, we introduce the **d
 ```java
 // volatile keyword ensures that the Singleton variable can be constructed completely.
 // JVM first allocate the memory for Singleton variable, init the instance using construcor, and assign the reference to Singleton.
-// But in actual rare case, JVM counld assign the reference before initializing the instance. So at this time, other threads may get the incomplete instance.
+// But in actual rare case, JVM could assign the reference before initializing the instance. So at this time, other threads may get the incomplete instance.
 private volatile static Singleton Singleton;
 
 private Singleton() { }
@@ -102,7 +102,7 @@ public static Singleton GetSingleton()
     return Singleton;
 }
 ```
-By the way, in C# language, we can implement as follows using **Monitor**.
+By the way, in C# language, we can implement as follows using **Monitor**. The **Monitor** keyword here takes the same effect as **synchronized** before.
 
 ```c#
 private static readonly Object s_lock = new Object();
@@ -126,7 +126,7 @@ public static Singleton GetSingleton() {
 }
 ```
 
-And we can also use the **Interlocked** to implement as follows. Even if multiple threads can construct more than one **temp** variable, the **Interlocked** allows only one can be assigned to **Singleton** variable.
+And we can also use the **Interlocked** to implement as follows. Note that even if multiple threads can construct more than one **temp** variable, the **Interlocked** allows only one can be assigned to **Singleton** variable. So, we just need to check **Singleton** once.
 
 ```c#
 private static SingletonLazyInit Singleton;
