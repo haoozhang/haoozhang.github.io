@@ -89,7 +89,7 @@ So what else do coffee and tea have in common? let's start with the recipes. Not
 
 ### Definition
 
-The **Template Method Pattern** defines the skeleton of an algorithm in a method, *deferring some steps* to subclasses. Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm’s structure.
+The **Template Method Pattern** defines the skeleton of an algorithm in a method, **deferring some steps** to subclasses. Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm’s structure.
 
 ### Applicability
 
@@ -191,10 +191,7 @@ public class Tea : CaffeineBeverage
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/TemplateMethodPattern) for complete code sample.
-
-### Known Uses
-
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/TemplateMethodPattern) for complete code sample.
 
 ### Related Patterns
 

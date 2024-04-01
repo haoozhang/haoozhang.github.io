@@ -17,7 +17,7 @@ Let's say that you have built your own home theater with a DVD player, a project
 
 You need to perform a few tasks: 1) put the screen down; 2) turn the projector on; 3) set the projector input to DVD; 4) turn the DVD player on; 5) start the DVD player playing.
 
-But there's more... when the movie is over, how do you turn everything off? So let’s see how the Facade Pattern can get us out of this mess so we can enjoy the movie...
+But there's more... when the movie is over, how do you turn everything off? So let’s see how the Facade Pattern (外观模式) can get us out of this mess so we can enjoy the movie...
 
 ### Definition
 
@@ -39,7 +39,7 @@ The **Complex Subsystem** consists of dozens of various objects. To make them al
 
 ### Consequence
 
-isolate your code from the complexity of a subsystem.
+Isolate your code from the complexity of a subsystem.
 
 ### Implementation
 
@@ -76,11 +76,5 @@ public class HomeTheaterFacade
     }
 }
 ```
-
-### Known Uses
-
-
-
-### Related Patterns
 
 

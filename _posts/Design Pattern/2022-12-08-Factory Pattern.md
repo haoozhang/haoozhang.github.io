@@ -17,7 +17,7 @@ Imagine that you have two pizza stores, you want them sale different styles of p
 
 ![img](/img/DesignPattern/factory_motivation.png)
 
-This design doesn't meet the **Open/Closed Principle**. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
+This design doesn't meet the **Open Closed Principle**. Suppose that we want to add one pizza type or pizza store, we have to update the method implementation.
 
 ### Definition
 
@@ -128,7 +128,7 @@ Further more, if we add a ingredient factory to create different ingredients, we
 
 ![img](/img/DesignPattern/factory_abstract_consequence.png)
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/PizzaFactory) for complete code sample.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/PizzaFactory) for complete code sample.
 
 ### Abstract Factory
 
@@ -138,8 +138,4 @@ The only difference between these two patterns is that the abstract factory defi
 
 ![img](/img/DesignPattern/factory_abstract.png)
 
-### Known Uses
-
-
-### Related Patterns
 

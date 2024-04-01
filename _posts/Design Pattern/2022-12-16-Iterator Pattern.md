@@ -33,13 +33,13 @@ It would really be nice if we could find a way to allow them to implement the sa
 
 ```c#
 Iterator iterator = array.createIterator();
-while(iterator.hasNect()) {
-    MenuItem menuItem = iterator.nect();
+while(iterator.hasNext()) {
+    MenuItem menuItem = iterator.next();
 }
 
 Iterator iterator = arraylist.createIterator();
-while(iterator.hasNect()) {
-    MenuItem menuItem = iterator.nect();
+while(iterator.hasNext()) {
+    MenuItem menuItem = iterator.next();
 }
 ```
 
@@ -74,7 +74,7 @@ Go over the client code to replace all of the collection traversal code with the
 
 Single Responsibility Principle. You can clean up the client code and the collections by extracting bulky traversal algorithms into separate classes.
 
-Open/Closed Principle. You can implement new types of collections and iterators and pass them to existing code without breaking anything.
+Open Closed Principle. You can implement new types of collections and iterators and pass them to existing code without breaking anything.
 
 ### Implementation
 
@@ -192,13 +192,13 @@ public class Waitress
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/IteratorPattern) for complete code sample.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/IteratorPattern) for complete code sample.
 
 ### Known Uses
 
 Using **java.util.Iterator** to simplify above code. Due to *ArrayList* has its own *iterator()* method, we use this existing one, instead of creating by ourselves.
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/IteratorPattern_Java) for complete java implementation.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/IteratorPattern_Java) for complete java implementation.
 
 ```java
 public class PancakeHouseMenu implements Menu
@@ -234,5 +234,3 @@ One point needs to be called out that perviously I have a question that why not 
 The answer is **Single Responsibility Principle**. If we let the collection instance manage two responsibilities (manage collection, and loop through elements), we will give the clss two reasons to change. When the change does, it's going to affect two aspects of your design.
 
 Every responsibility of a class is an area of potential change. More than one responsibility means more than one area of change. This principle guides us to keep each class to a single responsibility.
-
-### Related Patterns

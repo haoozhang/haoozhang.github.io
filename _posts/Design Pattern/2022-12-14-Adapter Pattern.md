@@ -100,7 +100,7 @@ public class TurkeyAdapter : IDuck
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/AdapterPattern) for complete code sample.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/AdapterPattern) for complete code sample.
 
 ### Known Uses
 

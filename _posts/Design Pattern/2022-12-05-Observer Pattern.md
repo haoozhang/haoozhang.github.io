@@ -13,13 +13,13 @@ tags:
 
 ### Motivation
 
-Imagine that you have two types of objects: a **Customer** and a **Store**. The customer is very interested in a particular brand of product (say, iPhone 14), which should become available in the store very soon.
+Imagine that you have two types of objects: a **Customer** and a **Store**. The customer is very interested in a particular brand of product (say, iPhone), which should become available in the store very soon.
 
-The customer could visit the store every day and check product availability. But it will cost their time very much. On the other hand, the store could send the notification to all consumers when the iPhone 14 comes, but it will disturb the consumers who are not interested.
+The customer could visit the store every day and check product availability, but it will cost their time very much. On the other hand, the store could send the notification to all consumers when the iPhone comes, but it will disturb the consumers who are not interested.
 
 ![img](/img/DesignPattern/observer_motivation.png)
 
-Now in this case, we need the Observer Pattern. The consumers who interested the particular brand of product can subscribe it, instead of querying it frequently. Then the store will notify only those subscribed consumers (not all) when the product comes.
+Now in this case, we need the **Observer Pattern**. The consumers who interested the particular brand of product can subscribe it, instead of querying it frequently. Then the store will notify only those subscribed consumers (not all) when the product comes.
 
 ### Definition
 
@@ -39,11 +39,13 @@ When state changes of one object may require changing other objects. You can oft
 
 **ConcreteSubject** is the implementation of **Subject** interface. In addition to the three methods, it has many observers and methods for getting or setting state, so that it can notify observers when state reaches certain threshold.
 
-**Observer** is also an interface, it has only one method: update. **ConcreteObject** is the implementation, which is the specific observer. It customize own logic in *update* method.
+**Observer** is also an interface, it has only one method: update. 
+
+**ConcreteObject** is the implementation, which is the specific observer. It customize own logic in *update* method.
 
 ### Consequence
 
-Decoupled the subject with observers. You can introduce new observer without having to change the subject (and vice versa).
+**Decoupled the subject with observers.** You can introduce new observer without having to change the subject (and vice versa).
 
 Note that here the observers are **notified in random order**.
 
@@ -146,7 +148,7 @@ public class CurrentConditionDisplay : IObserver
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/WeatherObserver) for complete code sample.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/WeatherObserver) for complete code sample.
 
 ### Known Uses
 
@@ -155,7 +157,73 @@ Java has built-in support for observer pattern with **Observable** and **Observe
 + For the **Observable** to send notifications. There it is a two-step process: first call the *setChanged()* method to signify that the state has changed, then call *notifyObservers()* or *notifyObservers(Object arg)* method.
 + For an **Observer** to receive notifications. If you want to "push" data to the observers, you can pass the data as a data object to the *notifyObservers(arg)* method. Else, you call *notifyObservers()* method and the **Observer** has to "pull" data from **Observable** object via calling some getter methods.
 
-Both JavaBeans and Swing also provide their own implementations of this pattern, e.g., **PropertyChangeListener** interface in JavaBeans.
+```java
+import java.util.Observable;
+import java.util.Observer;
 
-### Related Patterns
+public class WeatherData : Observable {
+    private float temperature;
+    private float pressure;
+    private float humidity;
+
+    private WeatherData() { }
+    
+    private void measurementsChanged() {
+        setChanged();
+        notifyObserver();
+    }
+
+    public void setMeasurement(float temperature, float pressure, float humidity) {
+        this.temperature = temperature;
+        this.pressure = pressure;
+        this.humidity = humidity;
+        measurementsChanged();
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getPressure() {
+        return pressure;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+}
+```
+
+```java
+import java.util.Observable;
+import java.util.Observer;
+
+public class CurrentConditionDisplay : Observer {
+    private float temperature;
+    private float pressure;
+    private float humidity;
+
+    private Observable observable;
+
+    public CurrentConditionDisplay(Observable observable) {
+        this.observable = observable;
+        observable.AddObserver(this);
+    }
+    
+    public void update(Observable obs, Object arg) {
+        if (obs instanceof WeatherData) {
+            WeatherData data = (WeatherData) obs;
+            this.temperature = data.;
+            this.pressure = ;
+            this.humidity = ;
+            display();
+        }
+    }
+
+    public void display() {
+        System.out.println("....");
+    }
+}
+```
+
 

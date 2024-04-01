@@ -25,7 +25,7 @@ Why we need all these classes? Can we use inheritance to define beverage and use
 
 ![img](/img/DesignPattern/decorator_motivation_2.png)
 
-The drawback of this design is that it's not align with the **Open/Closed Design Principle** (open for extension, and closed for modification). The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
+The drawback of this design is that it's not align with the **Open Closed Design Principle** (open for extension, and closed for modification). The goal is to extend the behavior without modifying existing code. But now we have to update the super class if we add more condiment.
 Besides, what if the customer want to buy a cup of coffee with double milk? It can't be achieved conveniently for current design.
 
 ### Definition
@@ -134,7 +134,7 @@ beverage = new Soy(beverage);
 Console.WriteLine($"{beverage.Description}'s cost:{beverage.Cost()}");
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/Starbuzz) for complete code sample.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/Starbuzz) for complete code sample.
 
 ### Known Uses
 
@@ -142,5 +142,4 @@ Decorating implementation in Java I/O.
 
 ![img](/img/DesignPattern/decorator_knownuse.png)
 
-### Related Patterns
 

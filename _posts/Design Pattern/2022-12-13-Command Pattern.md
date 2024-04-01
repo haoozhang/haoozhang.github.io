@@ -15,17 +15,19 @@ tags:
 
 After a long walk through the city, you get to a nice restaurant and sit at the table by the window. A friendly waiter approaches you and quickly takes your order, writing it down on a piece of paper. The waiter goes to the kitchen and sticks the order on the wall. After a while, the order gets to the chef, who reads it and cooks the meal accordingly. The cook places the meal on a tray along with the order. The waiter discovers the tray, checks the order to make sure everything is as you wanted it, and brings everything to your table.
 
-In this case, the paper order serves as a command. It remains in a queue until the chef is ready to serve it. The order contains all the relevant information required to cook the meal. It allows the chef to start cooking right away instead of running around clarifying the order details from you directly.
+In this case, the paper order serves as a **command**. It remains in a queue until the chef is ready to serve it. The order contains all the relevant information required to cook the meal. It allows the chef to start cooking right away instead of running around clarifying the order details from you directly.
 
 ### Definition
 
-The **Command Pattern** encapsulates a request as an object that contains all information about the request. This transformation lets you pass requests as a method arguments, delay or queue a request’s execution, and support undoable operations.
+The **Command Pattern** encapsulates a request as an object that contains all information about the request. This transformation lets you pass requests as a method arguments, queue a request’s execution, and support undoable operations.
 
 ### Applicability
 
 When you want to parametrize objects with operations. The command pattern can turn a specific method call into a stand-alone object. You can pass commands as method arguments, store them inside other objects, etc.
 
 When you want to queue operations, schedule their execution, or execute them remotely. As with any other object, a command can be serialized, which means converting it to a string that can be written to a database. Later, the string can be restored as the initial command object. Thus, you can delay and schedule command execution. 
+
+Think about the Message Queue. A producer is to produce and enqueue the message into the queue. A consumer is to retrieve the message from the queue and perform it. The message contains all of the required operation details.
 
 ### Structure
 
@@ -184,7 +186,7 @@ remoteControl.OffButtonPressed(0);
 remoteControl.UndoButtonPressed();
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/CommandPattern) for complete code sample, in which also contains macro commands.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/CommandPattern) for complete code sample, in which also contains macro commands.
 
 ### Known Uses
 
@@ -192,6 +194,4 @@ Message Queue
 
 Commands give us a way to package a piece of computation (a receiver and a set of actions) and pass it as a first-class object. Then it may be invoked long after, even be invoked by a different thread. We can take this scenario and apply it to many useful applications such as schedulers, thread pools, and job queues. \
 Imagine a job queue: you add commands to the queue on one end, and on the other end sits a group of threads. Threads run the following script: they remove a command from the queue, call its *execute()* method, wait for the call to finish, then discard the command object and retrieve a new one.
-
-### Related Patterns
 

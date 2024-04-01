@@ -13,7 +13,7 @@ tags:
 
 ### Motivation
 
-The State Pattern is closely realted to the concept of a **Finite-State Machine**. 
+The State Pattern is closely realted to the concept of a **Finite-State Machine** (有限状态机). 
 The main idea is that at any given moment, there is a finite number of states which a program can be in. Within any unique state, the program behaves differnetly, and can be switched from one state to another. These switching rules, called transitions, are also finite and predetermined.
 
 Imagine that we need to control the state changes for a gumball machine, make it work normally as follows.

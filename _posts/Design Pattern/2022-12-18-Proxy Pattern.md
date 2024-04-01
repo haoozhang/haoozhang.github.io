@@ -22,7 +22,7 @@ An easy way to achieve this is through a virtual proxy. The virtual proxy can pl
 
 ### Definition
 
-The **Proxy Pattern** provides a placeholder for another object to control access to it. A proxy allows you to perform something either before or after the request gets through to the original object.
+The **Proxy Pattern** provides a placeholder for another object to control access to it. A proxy allows you to **perform something either before or after the request** gets through to the original object.
 
 ### Applicability
 
@@ -68,9 +68,9 @@ The proxy works even if the service object isn’t ready or is not available.
 
 ### Implementation
 
-We have prepared two code sample to illustrate the Proxy Pattern. One is for remote proxy, another is for protection proxy.
+We have prepared two code samples to illustrate the Proxy Pattern. One is for remote proxy, another is for protection proxy.
 
-For remote proxy, we take the gumball machine monitor as an example, use the Java RMI to achieve remote procedure call. See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/RemoteProxy) for complete code sample for remote proxy.
+For remote proxy, we take the gumball machine monitor as an example, use the **Java RMI** to achieve remote procedure call. See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/RemoteProxy) for complete code sample for remote proxy.
 
 ```bash
 #Run Steps 
@@ -171,12 +171,10 @@ Then for protection proxy, let's say that we need a matchmaking service to help 
 
 This is a perfect example of where we might be able to use a Protection Proxy, because we should control access to the personal profile based on their ownship. For an owner, he/she can view and edit personal profile, but can't set the rating. But for the others, they can browse the others' profile and set the rating, but can't set others' profile.
 
-We use the Java Dynamic Proxy to implement it. See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/DynamicProxy) for complete code sample.
+We use the **Java Dynamic Proxy** to implement it. See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/DynamicProxy) for complete code sample.
 
 ![img](/img/DesignPattern/proxy_dynamic.png)
 
-### Known Uses
-
 ### Related Patterns
 
-**Decorator** and **Proxy** have similar structures, but very different intents. Both patterns are built on the composition principle, where one object is supposed to delegate some of the work to another. The difference is that a **Proxy** usually manages the life cycle of its service object on its own, whereas the composition of **Decorators** is always controlled by the client.
+**Decorator** and **Proxy** have similar structures, but very different intents. Both patterns are built on the composition principle, where one object is supposed to delegate some of the work to another. The difference is that a **Proxy** usually manages the lifecycle of its service object on its own, whereas the composition of **Decorators** is always controlled by the client.

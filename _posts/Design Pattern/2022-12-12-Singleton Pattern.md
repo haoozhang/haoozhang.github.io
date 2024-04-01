@@ -145,9 +145,4 @@ public static  SingletonLazyInit GetSingleton()
 }
 ```
 
-### Known Uses
-
-
-
-### Related Patterns
 

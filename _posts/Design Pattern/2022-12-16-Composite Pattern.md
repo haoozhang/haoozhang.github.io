@@ -15,7 +15,7 @@ tags:
 
 Let's continue to take the menu as an example. In Iterator Pattern chapter, we discussed how to encapsulate the iteration over the menus with different implementations under the hood. 
 
-Now, new requirement arrives. Imagine that we have to support not only multiple menus, but menus within menus. That is, it would be nice if we could make the dessert menu as an element of the certain menu, but that won't work as it is now implemented. It's time for change.
+Imagine that we have to support not only multiple menus, but menus within menus. That is, it would be nice if we could make the dessert menu as an element of the certain menu, but that won't work as it is now implemented. It's time for change.
 
 ![img](/img/DesignPattern/composite_motivation.png)
 
@@ -47,7 +47,7 @@ a **Leaf** class is to represent simple elements. A program may have multiple di
 
 Work with complex tree structures more conveniently.
 
-**Open/Closed Principle.** You can introduce new element types without breaking the existing code, which now works with the object tree.
+**Open Closed Principle.** You can introduce new element types without breaking the existing code, which now works with the object tree.
 
 ### Implementation
 
@@ -166,11 +166,8 @@ public class MenuItem : MenuComponent
 }
 ```
 
-See [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/CompositePattern) for complete code sample, where also uses the Iterator Pattern to loop through all nodes.
+See [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/CompositePattern) for complete code sample, where also uses the Iterator Pattern to loop through all nodes.
 
-If you prefer java implementation (due to java built-in iterator), see [here](https://github.com/haozhangms/Head-First-Design-Pattern/tree/main/CompositePattern_Java) for complete java sample.
-
-### Known Uses
+If you prefer java implementation (due to java built-in iterator), see [here](https://github.com/haoozhang/Head-First-Design-Pattern/tree/main/CompositePattern_Java) for complete java sample.
 
 
-### Related Patterns
